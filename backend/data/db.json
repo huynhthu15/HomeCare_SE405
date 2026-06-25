@@ -1,0 +1,1137 @@
+{
+  "users": [
+    {
+      "id": "USR-SAMPLE-001",
+      "name": "Nguyễn Minh Khang",
+      "email": "khang.nguyen@example.com",
+      "passwordHash": "sample-customer-01:cc22cdbf91e885578a0275bbd354b2546657c118adbf1ca8f991ff052da3a2ba",
+      "role": "customer",
+      "createdAt": "2026-06-22T03:15:38.328Z"
+    },
+    {
+      "id": "USR-SAMPLE-002",
+      "name": "Trần Hà Linh",
+      "email": "linh.tran@example.com",
+      "passwordHash": "sample-customer-02:bfc566d135a4c7d5042332dd9cd26f757c7c1b65944dfa0a02b7df3bd5e98754",
+      "role": "customer",
+      "createdAt": "2026-06-22T03:20:00.000Z"
+    },
+    {
+      "id": "USR-SAMPLE-ADMIN",
+      "name": "HomeCare Admin",
+      "email": "admin@homecare.test",
+      "passwordHash": "sample-admin-01:c466e7f17015133b26de9b5131ce76f4e5f2b32b6c665ec59ca1811cc3571beb",
+      "role": "admin",
+      "createdAt": "2026-06-22T03:25:00.000Z"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "profile-default",
+      "name": "Nguyễn Minh Khang",
+      "phone": "0908 245 688",
+      "email": "khang.nguyen@example.com",
+      "updatedAt": "2026-06-22T03:15:38.328Z"
+    },
+    {
+      "id": "USR-SAMPLE-001",
+      "name": "Nguyễn Minh Khang",
+      "phone": "0908 245 688",
+      "email": "khang.nguyen@example.com",
+      "address": "12 Nguyễn Văn Linh, Quận 7, TP.HCM",
+      "updatedAt": "2026-06-22T03:15:38.328Z"
+    },
+    {
+      "id": "USR-SAMPLE-ADMIN",
+      "name": "HomeCare Admin",
+      "phone": "0900 000 001",
+      "email": "admin@homecare.test",
+      "address": "HomeCare Operation Center",
+      "updatedAt": "2026-06-22T03:25:00.000Z"
+    },
+    {
+      "id": "USR-SAMPLE-002",
+      "name": "Trần Hà Linh",
+      "phone": "0912 334 556",
+      "email": "linh.tran@example.com",
+      "address": "45 Lê Văn Sỹ, Quận 3, TP.HCM",
+      "updatedAt": "2026-06-23T04:42:03.595Z"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "BK-24061",
+      "userId": "USR-SAMPLE-001",
+      "service": "Vệ sinh máy lạnh",
+      "domain": "Cleaning",
+      "time": "Hôm nay, 15:30",
+      "status": "Đã thanh toán",
+      "technician": "Nguyễn Minh Khang",
+      "amount": 397000,
+      "address": "12 Nguyễn Văn Linh, Quận 7",
+      "note": "Gọi trước 10 phút khi đến nơi.",
+      "createdAt": "2026-06-22T03:15:38.329Z",
+      "paymentId": "TXN-MQP5W3KIJLEG",
+      "paidAt": "2026-06-22T11:58:20.946Z"
+    },
+    {
+      "id": "BK-24062",
+      "userId": "USR-SAMPLE-001",
+      "service": "Sửa ổ cắm phòng bếp",
+      "domain": "Repair",
+      "time": "Ngày mai, 09:30",
+      "status": "Đã thanh toán",
+      "technician": "Lê Hoàng An",
+      "amount": 285000,
+      "address": "12 Nguyễn Văn Linh, Quận 7",
+      "note": "Ổ cắm bếp bị nóng khi dùng bếp điện.",
+      "createdAt": "2026-06-22T03:45:00.000Z",
+      "paymentId": "TXN-MQP3HWV8EZP7",
+      "paidAt": "2026-06-22T10:51:19.844Z"
+    },
+    {
+      "id": "BK-MQOQ2WJPXQXQ",
+      "userId": "USR-SAMPLE-002",
+      "service": "Vệ sinh bếp",
+      "domain": "Cleaning",
+      "time": "Hôm nay, 13:30",
+      "status": "Chờ xác nhận thanh toán",
+      "technician": "",
+      "amount": 317000,
+      "address": "12 Nguyễn Văn Linh, Quận 7",
+      "note": "Ưu tiên dùng dung dịch không mùi.",
+      "voucher": "",
+      "addOns": [
+        "Phòng khách",
+        "Máy lạnh"
+      ],
+      "createdAt": "2026-06-22T04:35:44.581Z"
+    },
+    {
+      "id": "BK-24071",
+      "userId": "USR-SAMPLE-002",
+      "service": "Bảo trì tủ lạnh",
+      "domain": "Appliance",
+      "time": "Thứ 6, 14:00",
+      "status": "Đã xác nhận",
+      "technician": "Phạm Gia Hân",
+      "amount": 252000,
+      "address": "45 Lê Văn Sỹ, Quận 3",
+      "note": "Tủ lạnh kêu to vào ban đêm.",
+      "createdAt": "2026-06-22T04:10:00.000Z"
+    },
+    {
+      "id": "BK-OPS-001",
+      "userId": "USR-SAMPLE-ADMIN",
+      "service": "Kiểm tra trung tâm điều phối",
+      "domain": "Booking",
+      "time": "Hôm nay, 17:00",
+      "status": "Nội bộ",
+      "technician": "HomeCare Ops",
+      "amount": 0,
+      "address": "HomeCare Operation Center",
+      "note": "Dữ liệu riêng cho tài khoản admin.",
+      "createdAt": "2026-06-22T03:55:00.000Z"
+    },
+    {
+      "id": "BK-MQP1GLHMU4PP",
+      "userId": "USR-SAMPLE-001",
+      "service": "Vệ sinh máy lạnh",
+      "domain": "Cleaning",
+      "time": "Hôm nay, 15:30",
+      "status": "Đã thanh toán",
+      "technician": "Nguyễn Minh Khang",
+      "amount": 185000,
+      "address": "12 Nguyễn Văn Linh, Quận 7",
+      "note": "Gọi trước 10 phút khi đến nơi.",
+      "voucher": "HOMECARE10",
+      "addOns": [
+        "photo-report"
+      ],
+      "createdAt": "2026-06-22T09:54:19.210Z",
+      "paymentId": "TXN-MQP354LK8J5Z",
+      "paidAt": "2026-06-22T10:41:23.336Z"
+    },
+    {
+      "id": "BK-MQP2ELZKWR88",
+      "userId": "USR-SAMPLE-001",
+      "service": "Sửa chữa nước",
+      "domain": "Repair",
+      "time": "Hôm nay, 15:30",
+      "status": "Đã thanh toán",
+      "technician": "Lê Hoàng An",
+      "amount": 245000,
+      "address": "12 Nguyễn Văn Linh, Quận 7",
+      "note": "Gọi trước 10 phút khi đến nơi.",
+      "voucher": "HOMECARE10",
+      "addOns": [
+        "photo-report"
+      ],
+      "createdAt": "2026-06-22T10:20:46.160Z",
+      "paymentId": "TXN-MQP33NLJKMKQ",
+      "paidAt": "2026-06-22T10:40:14.647Z"
+    },
+    {
+      "id": "BK-MQP6BV931VH5",
+      "userId": "USR-SAMPLE-001",
+      "service": "Sửa chữa điện",
+      "domain": "Repair",
+      "time": "Hôm nay, 15:30",
+      "status": "Đã thanh toán",
+      "technician": "Lê Hoàng An",
+      "amount": 225000,
+      "address": "12 Nguyễn Văn Linh, Quận 7",
+      "note": "Gọi trước 10 phút khi đến nơi.",
+      "voucher": "HOMECARE10",
+      "addOns": [
+        "photo-report"
+      ],
+      "createdAt": "2026-06-22T12:10:36.663Z",
+      "paymentId": "TXN-MQP6CQSXFHR9",
+      "paidAt": "2026-06-22T12:11:17.553Z"
+    },
+    {
+      "id": "BK-MQP6D49TXKV2",
+      "userId": "USR-SAMPLE-001",
+      "service": "Vệ sinh bếp",
+      "domain": "Cleaning",
+      "time": "Hôm nay, 15:30",
+      "status": "Đã thanh toán",
+      "technician": "Nguyễn Minh Khang",
+      "amount": 265000,
+      "address": "12 Nguyễn Văn Linh, Quận 7",
+      "note": "Gọi trước 10 phút khi đến nơi.",
+      "voucher": "HOMECARE10",
+      "addOns": [
+        "photo-report"
+      ],
+      "createdAt": "2026-06-22T12:11:35.009Z",
+      "paymentId": "TXN-MQP6DOHFPNWI",
+      "paidAt": "2026-06-22T12:12:01.203Z"
+    },
+    {
+      "id": "BK-MQPE7A8XTPKI",
+      "userId": "USR-SAMPLE-001",
+      "service": "Vệ sinh máy lạnh",
+      "domain": "Cleaning",
+      "time": "Hôm nay, 13:30",
+      "status": "Chờ xác nhận thanh toán",
+      "technician": "",
+      "amount": 237000,
+      "address": "12 Nguyễn Văn Linh, Quận 7",
+      "note": "Ưu tiên dùng dung dịch không mùi.",
+      "voucher": "",
+      "addOns": [
+        "Phòng khách",
+        "Máy lạnh"
+      ],
+      "createdAt": "2026-06-22T15:50:59.745Z"
+    },
+    {
+      "id": "BK-MQPFA8SLVQJT",
+      "userId": "USR-SAMPLE-001",
+      "service": "Vệ sinh nhà mới",
+      "domain": "Cleaning",
+      "time": "Hôm nay, 13:30",
+      "status": "Chờ xác nhận thanh toán",
+      "technician": "",
+      "amount": 692000,
+      "address": "12 Nguyễn Văn Linh, Quận 7",
+      "note": "Ưu tiên dùng dung dịch không mùi.",
+      "voucher": "",
+      "addOns": [
+        "Sàn",
+        "Kính",
+        "Tủ kệ",
+        "Ban công"
+      ],
+      "createdAt": "2026-06-22T16:21:17.445Z"
+    },
+    {
+      "id": "BK-MQQLGKPRJW4V",
+      "userId": "USR-SAMPLE-001",
+      "service": "Kiểm tra ống xả máy giặt",
+      "domain": "Repair",
+      "time": "Ngày mai",
+      "status": "Chờ xác nhận thanh toán",
+      "technician": "",
+      "amount": 220000,
+      "address": "Địa chỉ trong hồ sơ",
+      "note": "Máy giặt LG - Ống xả có dấu hiệu thoát nước chậm.",
+      "voucher": "",
+      "addOns": [],
+      "createdAt": "2026-06-23T12:01:56.703Z"
+    },
+    {
+      "id": "BK-MQQLQK138FOI",
+      "userId": "USR-SAMPLE-001",
+      "service": "Bảo trì Tủ lạnh Samsung",
+      "domain": "Appliance",
+      "time": "Theo lịch định kỳ",
+      "status": "Chờ xác nhận thanh toán",
+      "technician": "",
+      "amount": 220000,
+      "address": "Địa chỉ trong hồ sơ",
+      "note": "Thiết bị: Tủ lạnh Samsung",
+      "voucher": "",
+      "addOns": [],
+      "createdAt": "2026-06-23T12:09:42.375Z"
+    },
+    {
+      "id": "BK-MQQMXQVIO1CQ",
+      "userId": "USR-SAMPLE-001",
+      "service": "Vệ sinh lưới lọc máy lạnh",
+      "domain": "Cleaning",
+      "time": "27/6/2026, 09:30",
+      "status": "Đã thanh toán",
+      "technician": "Nguyễn Minh Khang",
+      "amount": 225000,
+      "address": "12 Nguyễn Văn Linh, Quận 7",
+      "note": "Máy lạnh phòng khách - Đã hơn 90 ngày từ lần vệ sinh gần nhất.",
+      "voucher": "HOMECARE10",
+      "addOns": [
+        "photo-report"
+      ],
+      "source": "reminder",
+      "reminderId": "RM-001",
+      "deviceId": "DV-001",
+      "deviceName": "Máy lạnh phòng khách",
+      "createdAt": "2026-06-23T12:43:17.454Z",
+      "paymentId": "TXN-MQQMZ5XXJ56E",
+      "paidAt": "2026-06-23T12:44:23.637Z"
+    }
+  ],
+  "payments": [
+    {
+      "id": "TXN-78291",
+      "userId": "USR-SAMPLE-001",
+      "bookingId": "BK-24061",
+      "service": "Vệ sinh máy lạnh",
+      "method": "Thẻ Visa/Mastercard",
+      "amount": 397000,
+      "status": "Thành công",
+      "createdAt": "2026-06-22T03:15:38.329Z"
+    },
+    {
+      "id": "TXN-78292",
+      "userId": "USR-SAMPLE-001",
+      "bookingId": "BK-24062",
+      "service": "Sửa ổ cắm phòng bếp",
+      "method": "Tiền mặt sau dịch vụ",
+      "amount": 285000,
+      "status": "Đặt cọc",
+      "createdAt": "2026-06-22T03:46:00.000Z"
+    },
+    {
+      "id": "TXN-MQOQ3YR5BLS8",
+      "userId": "USR-SAMPLE-002",
+      "bookingId": "BK-MQOQ2WJPXQXQ",
+      "service": "Vệ sinh bếp",
+      "method": "Thẻ Visa/Mastercard",
+      "amount": 291755,
+      "status": "Thành công",
+      "createdAt": "2026-06-22T04:36:34.097Z"
+    },
+    {
+      "id": "TXN-MQOQ4L763I1L",
+      "userId": "USR-SAMPLE-001",
+      "bookingId": "BK-24061",
+      "service": "Vệ sinh máy lạnh",
+      "method": "Thẻ Visa/Mastercard",
+      "amount": 372955,
+      "status": "Thành công",
+      "createdAt": "2026-06-22T04:37:03.186Z"
+    },
+    {
+      "id": "TXN-MQOQFSM73PZW",
+      "userId": "USR-SAMPLE-002",
+      "bookingId": "BK-MQOQ2WJPXQXQ",
+      "service": "Vệ sinh bếp",
+      "method": "Thẻ Visa/Mastercard",
+      "amount": 291755,
+      "status": "Thành công",
+      "createdAt": "2026-06-22T04:45:46.015Z"
+    },
+    {
+      "id": "TXN-OPS-001",
+      "userId": "USR-SAMPLE-ADMIN",
+      "bookingId": "BK-OPS-001",
+      "service": "Kiểm tra trung tâm điều phối",
+      "method": "Nội bộ",
+      "amount": 0,
+      "status": "Đã ghi nhận",
+      "createdAt": "2026-06-22T03:56:00.000Z"
+    },
+    {
+      "id": "TXN-MQOQQKLXZAWE",
+      "userId": "USR-SAMPLE-001",
+      "bookingId": "BK-24062",
+      "service": "Sửa ổ cắm phòng bếp",
+      "method": "Thẻ Visa/Mastercard",
+      "amount": 259275,
+      "status": "Thành công",
+      "createdAt": "2026-06-22T04:54:08.853Z"
+    },
+    {
+      "id": "TXN-MQP1HV428XOJ",
+      "userId": "USR-SAMPLE-001",
+      "bookingId": "BK-MQP1GLHMU4PP",
+      "service": "Vệ sinh máy lạnh",
+      "method": "Thẻ Visa/Mastercard",
+      "amount": 157775,
+      "status": "Thành công",
+      "createdAt": "2026-06-22T09:55:18.338Z"
+    },
+    {
+      "id": "TXN-MQP33NLJKMKQ",
+      "userId": "USR-SAMPLE-001",
+      "bookingId": "BK-MQP2ELZKWR88",
+      "service": "Sửa chữa nước",
+      "method": "Thẻ Visa/Mastercard",
+      "methodDetail": "Visa - **** 2486",
+      "gatewayRef": "CARD-24814636",
+      "amount": 218675,
+      "status": "Thành công",
+      "createdAt": "2026-06-22T10:40:14.647Z"
+    },
+    {
+      "id": "TXN-MQP354LK8J5Z",
+      "userId": "USR-SAMPLE-001",
+      "bookingId": "BK-MQP1GLHMU4PP",
+      "service": "Vệ sinh máy lạnh",
+      "method": "Ví điện tử",
+      "methodDetail": "MoMo - 0909 123 456",
+      "gatewayRef": "WALLET-24883330",
+      "amount": 160275,
+      "status": "Thành công",
+      "createdAt": "2026-06-22T10:41:23.336Z"
+    },
+    {
+      "id": "TXN-MQP3HWV8EZP7",
+      "userId": "USR-SAMPLE-001",
+      "bookingId": "BK-24062",
+      "service": "Sửa ổ cắm phòng bếp",
+      "method": "Ví điện tử",
+      "methodDetail": "MoMo - 0909 123 456",
+      "gateway": "VNPay Sandbox",
+      "gatewayRef": "VNPAY-WALLET-25477586",
+      "amount": 261775,
+      "status": "Thành công",
+      "createdAt": "2026-06-22T10:51:19.844Z"
+    },
+    {
+      "id": "TXN-MQP5W3KIJLEG",
+      "userId": "USR-SAMPLE-001",
+      "bookingId": "BK-24061",
+      "service": "Vệ sinh máy lạnh",
+      "method": "Ví điện tử",
+      "methodDetail": "MoMo - 0909 123 456",
+      "gateway": "MoMo Sandbox",
+      "gatewayRef": "MOMO-WALLET-29498718",
+      "amount": 375455,
+      "status": "Thành công",
+      "createdAt": "2026-06-22T11:58:20.946Z"
+    },
+    {
+      "id": "TXN-MQP6CQSXFHR9",
+      "userId": "USR-SAMPLE-001",
+      "bookingId": "BK-MQP6BV931VH5",
+      "service": "Sửa chữa điện",
+      "method": "MoMo",
+      "methodDetail": "Ví điện tử, số điện thoại và xác thực OTP",
+      "gateway": "MoMo",
+      "gatewayRef": "MOMO-30275322",
+      "amount": 200875,
+      "status": "Thành công",
+      "createdAt": "2026-06-22T12:11:17.553Z"
+    },
+    {
+      "id": "TXN-MQP6DOHFPNWI",
+      "userId": "USR-SAMPLE-001",
+      "bookingId": "BK-MQP6D49TXKV2",
+      "service": "Vệ sinh bếp",
+      "method": "VNPay",
+      "methodDetail": "QR Pay, thẻ ATM nội địa và tài khoản ngân hàng",
+      "gateway": "VNPay",
+      "gatewayRef": "VNPAY-30318956",
+      "amount": 238975,
+      "status": "Thành công",
+      "createdAt": "2026-06-22T12:12:01.203Z"
+    },
+    {
+      "id": "TXN-MQQMZ5XXJ56E",
+      "userId": "USR-SAMPLE-001",
+      "bookingId": "BK-MQQMXQVIO1CQ",
+      "service": "Vệ sinh lưới lọc máy lạnh",
+      "method": "VNPay",
+      "methodDetail": "QR Pay, thẻ ATM nội địa và tài khoản ngân hàng",
+      "gateway": "VNPay",
+      "gatewayRef": "VNPAY-18661405",
+      "amount": 198375,
+      "status": "Thành công",
+      "createdAt": "2026-06-23T12:44:23.637Z"
+    }
+  ],
+  "paymentMethods": [
+    {
+      "id": "card",
+      "userId": "USR-SAMPLE-001",
+      "name": "Thẻ Visa/Mastercard",
+      "detail": "Visa - **** 2486",
+      "accountLabel": "Nguyễn Minh Khang",
+      "accountValue": "**** 2486",
+      "provider": "Visa",
+      "referencePrefix": "CARD",
+      "fee": 0,
+      "updatedAt": "2026-06-22T10:55:00.000Z"
+    },
+    {
+      "id": "wallet",
+      "userId": "USR-SAMPLE-001",
+      "name": "Ví điện tử",
+      "detail": "MoMo - 0909 123 456",
+      "accountLabel": "MoMo",
+      "accountValue": "0909 123 456",
+      "provider": "MoMo",
+      "referencePrefix": "WALLET",
+      "fee": 2500,
+      "updatedAt": "2026-06-22T10:55:00.000Z"
+    },
+    {
+      "id": "bank",
+      "userId": "USR-SAMPLE-001",
+      "name": "Chuyển khoản ngân hàng",
+      "detail": "Vietcombank - 1028 884 688",
+      "accountLabel": "VCB - Nguyễn Minh Khang",
+      "accountValue": "1028 884 688",
+      "provider": "Vietcombank",
+      "referencePrefix": "BANK",
+      "fee": 0,
+      "updatedAt": "2026-06-22T10:55:00.000Z"
+    },
+    {
+      "id": "cash",
+      "userId": "USR-SAMPLE-001",
+      "name": "Tiền mặt sau dịch vụ",
+      "detail": "Tiền mặt - Thanh toán cho kỹ thuật viên",
+      "accountLabel": "Thu tại nhà",
+      "accountValue": "Thanh toán cho kỹ thuật viên",
+      "provider": "Tiền mặt",
+      "referencePrefix": "CASH",
+      "fee": 0,
+      "updatedAt": "2026-06-22T10:55:00.000Z"
+    },
+    {
+      "id": "card",
+      "name": "Thẻ Visa/Mastercard",
+      "detail": "Visa - **** 2486",
+      "accountLabel": "Nguyễn Minh Khang",
+      "accountValue": "**** 2486",
+      "provider": "Visa",
+      "referencePrefix": "CARD",
+      "fee": 0,
+      "userId": "guest",
+      "updatedAt": "2026-06-22T11:02:51.141Z"
+    },
+    {
+      "id": "wallet",
+      "name": "Ví điện tử",
+      "detail": "MoMo - 0909 123 456",
+      "accountLabel": "MoMo",
+      "accountValue": "0909 123 456",
+      "provider": "MoMo",
+      "referencePrefix": "WALLET",
+      "fee": 2500,
+      "userId": "guest",
+      "updatedAt": "2026-06-22T11:02:51.141Z"
+    },
+    {
+      "id": "bank",
+      "name": "Chuyển khoản ngân hàng",
+      "detail": "Vietcombank - 1028 884 688",
+      "accountLabel": "VCB - Nguyễn Minh Khang",
+      "accountValue": "1028 884 688",
+      "provider": "Vietcombank",
+      "referencePrefix": "BANK",
+      "fee": 0,
+      "userId": "guest",
+      "updatedAt": "2026-06-22T11:02:51.141Z"
+    },
+    {
+      "id": "cash",
+      "name": "Tiền mặt sau dịch vụ",
+      "detail": "Tiền mặt - Thanh toán cho kỹ thuật viên",
+      "accountLabel": "Thu tại nhà",
+      "accountValue": "Thanh toán cho kỹ thuật viên",
+      "provider": "Tiền mặt",
+      "referencePrefix": "CASH",
+      "fee": 0,
+      "userId": "guest",
+      "updatedAt": "2026-06-22T11:02:51.141Z"
+    }
+  ],
+  "services": [
+    {
+      "id": "cleaning-aircon",
+      "domain": "Cleaning",
+      "title": "Vệ sinh máy lạnh",
+      "description": "Làm sạch dàn lạnh, lưới lọc và kiểm tra hoạt động.",
+      "subtitle": "Dàn lạnh, lưới lọc, kiểm tra gas",
+      "includedAreas": [
+        "Máy lạnh",
+        "Dàn lạnh",
+        "Lưới lọc"
+      ],
+      "price": 180000,
+      "duration": "60 phút",
+      "rating": 4.9,
+      "demand": "Cao"
+    },
+    {
+      "id": "cleaning-kitchen",
+      "domain": "Cleaning",
+      "title": "Vệ sinh bếp",
+      "description": "Bếp gas/từ, máy hút mùi, mặt đá.",
+      "subtitle": "Bếp gas/từ, máy hút mùi, mặt đá",
+      "includedAreas": [
+        "Bếp",
+        "Máy hút mùi",
+        "Mặt đá"
+      ],
+      "price": 260000,
+      "duration": "90 phút",
+      "rating": 4.8,
+      "demand": "Cao"
+    },
+    {
+      "id": "cleaning-bathroom",
+      "domain": "Cleaning",
+      "title": "Vệ sinh nhà tắm",
+      "description": "Khử khuẩn, kính, sàn, lavabo.",
+      "subtitle": "Khử khuẩn, kính, sàn, lavabo",
+      "includedAreas": [
+        "Nhà tắm",
+        "Kính",
+        "Sàn",
+        "Lavabo"
+      ],
+      "price": 220000,
+      "duration": "75 phút",
+      "rating": 4.7,
+      "demand": "Cao"
+    },
+    {
+      "id": "cleaning-sofa",
+      "domain": "Cleaning",
+      "title": "Giặt sofa - nệm",
+      "description": "Hút bụi sâu, giặt hơi nước.",
+      "subtitle": "Hút bụi sâu, giặt hơi nước",
+      "includedAreas": [
+        "Phòng khách",
+        "Sofa",
+        "Nệm"
+      ],
+      "price": 320000,
+      "duration": "120 phút",
+      "rating": 4.9,
+      "demand": "Định kỳ"
+    },
+    {
+      "id": "cleaning-deep-home",
+      "domain": "Cleaning",
+      "title": "Tổng vệ sinh căn hộ",
+      "description": "Phòng khách, phòng ngủ, bếp, nhà tắm.",
+      "subtitle": "Phòng khách, phòng ngủ, bếp, nhà tắm",
+      "includedAreas": [
+        "Phòng khách",
+        "Phòng ngủ",
+        "Bếp",
+        "Nhà tắm"
+      ],
+      "price": 520000,
+      "duration": "180 phút",
+      "rating": 4.8,
+      "demand": "Cao"
+    },
+    {
+      "id": "cleaning-move-in",
+      "domain": "Cleaning",
+      "title": "Vệ sinh nhà mới",
+      "description": "Bụi xây dựng, sàn, kính, tủ kệ.",
+      "subtitle": "Bụi xây dựng, sàn, kính, tủ kệ",
+      "includedAreas": [
+        "Sàn",
+        "Kính",
+        "Tủ kệ",
+        "Ban công"
+      ],
+      "price": 680000,
+      "duration": "240 phút",
+      "rating": 4.9,
+      "demand": "Theo yêu cầu"
+    },
+    {
+      "id": "cleaning-curtain-carpet",
+      "domain": "Cleaning",
+      "title": "Giặt rèm - thảm",
+      "description": "Hút bụi, khử mùi, giặt hơi nước.",
+      "subtitle": "Hút bụi, khử mùi, giặt hơi nước",
+      "includedAreas": [
+        "Rèm",
+        "Thảm",
+        "Khu vực sinh hoạt"
+      ],
+      "price": 360000,
+      "duration": "150 phút",
+      "rating": 4.7,
+      "demand": "Định kỳ"
+    },
+    {
+      "id": "cleaning-balcony-glass",
+      "domain": "Cleaning",
+      "title": "Vệ sinh kính - ban công",
+      "description": "Kính cửa, lan can, sàn ban công.",
+      "subtitle": "Kính cửa, lan can, sàn ban công",
+      "includedAreas": [
+        "Kính cửa",
+        "Lan can",
+        "Ban công"
+      ],
+      "price": 240000,
+      "duration": "90 phút",
+      "rating": 4.8,
+      "demand": "Theo mùa"
+    },
+    {
+      "id": "repair-electric",
+      "domain": "Repair",
+      "title": "Sửa chữa điện",
+      "description": "Ổ cắm, aptomat, đèn, chập điện.",
+      "subtitle": "Ổ cắm, aptomat, đèn, chập điện",
+      "price": 220000,
+      "duration": "90 phút",
+      "response": "30 phút",
+      "rating": 4.9,
+      "demand": "Nhanh"
+    },
+    {
+      "id": "repair-water",
+      "domain": "Repair",
+      "title": "Sửa chữa nước",
+      "description": "Rò rỉ, nghẹt lavabo, bơm nước.",
+      "subtitle": "Rò rỉ, nghẹt lavabo, bơm nước",
+      "price": 240000,
+      "duration": "90 phút",
+      "response": "35 phút",
+      "rating": 4.8,
+      "demand": "Nhanh"
+    },
+    {
+      "id": "repair-electronics",
+      "domain": "Repair",
+      "title": "Điện tử gia dụng",
+      "description": "TV, loa, lò vi sóng, bếp điện.",
+      "subtitle": "TV, loa, lò vi sóng, bếp điện",
+      "price": 280000,
+      "duration": "90 phút",
+      "response": "45 phút",
+      "rating": 4.7,
+      "demand": "Kỹ thuật"
+    },
+    {
+      "id": "repair-general",
+      "domain": "Repair",
+      "title": "Bảo trì tổng hợp",
+      "description": "Bản lề, khóa cửa, kệ, thiết bị nhỏ.",
+      "subtitle": "Bản lề, khóa cửa, kệ, thiết bị nhỏ",
+      "price": 190000,
+      "duration": "75 phút",
+      "response": "40 phút",
+      "rating": 4.8,
+      "demand": "Định kỳ"
+    },
+    {
+      "id": "repair-aircon",
+      "domain": "Repair",
+      "title": "Sửa máy lạnh",
+      "description": "Không lạnh, rò nước, lỗi remote, vệ sinh dàn nóng.",
+      "subtitle": "Không lạnh, rò nước, lỗi remote, vệ sinh dàn nóng",
+      "price": 260000,
+      "duration": "120 phút",
+      "response": "45 phút",
+      "rating": 4.8,
+      "demand": "Cao"
+    },
+    {
+      "id": "repair-washer",
+      "domain": "Repair",
+      "title": "Sửa máy giặt",
+      "description": "Không vắt, không xả nước, rung lắc, báo lỗi.",
+      "subtitle": "Không vắt, không xả nước, rung lắc, báo lỗi",
+      "price": 250000,
+      "duration": "120 phút",
+      "response": "50 phút",
+      "rating": 4.7,
+      "demand": "Cao"
+    },
+    {
+      "id": "repair-lock-door",
+      "domain": "Repair",
+      "title": "Sửa khóa cửa",
+      "description": "Khóa kẹt, bản lề xệ, tay nắm, khóa thông minh.",
+      "subtitle": "Khóa kẹt, bản lề xệ, tay nắm, khóa thông minh",
+      "price": 210000,
+      "duration": "75 phút",
+      "response": "35 phút",
+      "rating": 4.8,
+      "demand": "Nhanh"
+    },
+    {
+      "id": "repair-internet-camera",
+      "domain": "Repair",
+      "title": "Internet & camera",
+      "description": "Mất mạng, camera offline, đầu ghi, dây tín hiệu.",
+      "subtitle": "Mất mạng, camera offline, đầu ghi, dây tín hiệu",
+      "price": 230000,
+      "duration": "90 phút",
+      "response": "40 phút",
+      "rating": 4.8,
+      "demand": "Nhanh"
+    },
+    {
+      "id": "appliance-fridge",
+      "domain": "Appliance",
+      "title": "Bảo trì tủ lạnh",
+      "description": "Vệ sinh ron cửa, đo nhiệt độ và kiểm tra block.",
+      "subtitle": "Vệ sinh ron cửa, đo nhiệt độ và kiểm tra block",
+      "price": 220000,
+      "duration": "75 phút",
+      "rating": 4.7,
+      "demand": "Định kỳ"
+    },
+    {
+      "id": "appliance-maintenance",
+      "domain": "Appliance",
+      "title": "Bảo trì thiết bị",
+      "description": "Kiểm tra, vệ sinh nhẹ và đánh giá tình trạng thiết bị gia dụng.",
+      "subtitle": "Kiểm tra tổng quát, vệ sinh nhẹ, khuyến nghị bảo trì",
+      "price": 220000,
+      "duration": "75 phút",
+      "rating": 4.8,
+      "demand": "Định kỳ"
+    },
+    {
+      "id": "tracking-live",
+      "domain": "Tracking",
+      "title": "Theo dõi kỹ thuật viên",
+      "description": "Cập nhật vị trí, ETA, checklist và ảnh nghiệm thu.",
+      "subtitle": "ETA, trạng thái và checklist",
+      "price": 0,
+      "duration": "Realtime",
+      "rating": 4.9,
+      "demand": "Live"
+    }
+  ],
+  "devices": [
+    {
+      "id": "DV-001",
+      "userId": "USR-SAMPLE-001",
+      "name": "Máy lạnh phòng khách",
+      "status": "Hoạt động tốt",
+      "room": "Phòng khách",
+      "health": 92,
+      "tone": "emerald"
+    },
+    {
+      "id": "DV-002",
+      "userId": "USR-SAMPLE-001",
+      "name": "Máy giặt LG",
+      "status": "Cần bảo trì",
+      "room": "Ban công",
+      "health": 68,
+      "tone": "amber"
+    },
+    {
+      "id": "DV-003",
+      "userId": "USR-SAMPLE-001",
+      "name": "Tủ lạnh Samsung",
+      "status": "Lỗi cảm biến",
+      "room": "Bếp",
+      "health": 44,
+      "tone": "rose"
+    },
+    {
+      "id": "DV-LINH-001",
+      "userId": "USR-SAMPLE-002",
+      "name": "Máy lạnh phòng ngủ",
+      "status": "Cần vệ sinh",
+      "room": "Phòng ngủ",
+      "health": 61,
+      "tone": "amber"
+    },
+    {
+      "id": "DV-LINH-002",
+      "userId": "USR-SAMPLE-002",
+      "name": "Tủ lạnh Panasonic",
+      "status": "Hoạt động ổn định",
+      "room": "Bếp",
+      "health": 88,
+      "tone": "emerald"
+    },
+    {
+      "id": "DV-LINH-003",
+      "userId": "USR-SAMPLE-002",
+      "name": "Máy lọc nước Karofi",
+      "status": "Sắp thay lõi",
+      "room": "Bếp",
+      "health": 72,
+      "tone": "sky"
+    },
+    {
+      "id": "DV-OPS-001",
+      "userId": "USR-SAMPLE-ADMIN",
+      "name": "Bảng điều phối trung tâm",
+      "status": "Online",
+      "room": "Operation Center",
+      "health": 99,
+      "tone": "emerald"
+    }
+  ],
+  "reminders": [
+    {
+      "id": "RM-001",
+      "userId": "USR-SAMPLE-001",
+      "deviceId": "DV-001",
+      "deviceName": "Máy lạnh phòng khách",
+      "title": "Vệ sinh lưới lọc máy lạnh",
+      "type": "Vệ sinh định kỳ",
+      "domain": "Cleaning",
+      "dueDate": "2026-06-27",
+      "note": "Đã hơn 90 ngày từ lần vệ sinh gần nhất.",
+      "status": "scheduled",
+      "createdAt": "2026-06-22T10:55:00.000Z",
+      "updatedAt": "2026-06-23T12:43:17.454Z",
+      "bookingId": "BK-MQQMXQVIO1CQ"
+    },
+    {
+      "id": "RM-002",
+      "userId": "USR-SAMPLE-001",
+      "deviceId": "DV-002",
+      "deviceName": "Máy giặt LG",
+      "title": "Kiểm tra ống xả máy giặt",
+      "type": "Kiểm tra kỹ thuật",
+      "domain": "Repair",
+      "dueDate": "2026-06-24",
+      "note": "Ống xả có dấu hiệu thoát nước chậm.",
+      "status": "done",
+      "createdAt": "2026-06-22T10:55:00.000Z",
+      "updatedAt": "2026-06-23T12:02:55.931Z",
+      "bookingId": "BK-MQQLGKPRJW4V",
+      "completedAt": "2026-06-23T12:02:55.931Z"
+    },
+    {
+      "id": "RM-LINH-001",
+      "userId": "USR-SAMPLE-002",
+      "deviceId": "DV-LINH-001",
+      "deviceName": "Máy lạnh phòng ngủ",
+      "title": "Đặt lịch vệ sinh máy lạnh phòng ngủ",
+      "type": "Vệ sinh định kỳ",
+      "domain": "Cleaning",
+      "dueDate": "2026-06-28",
+      "note": "Hiệu suất lạnh giảm trong tuần gần đây.",
+      "status": "pending",
+      "createdAt": "2026-06-22T10:55:00.000Z",
+      "updatedAt": "2026-06-22T10:55:00.000Z"
+    },
+    {
+      "id": "RM-LINH-002",
+      "userId": "USR-SAMPLE-002",
+      "deviceId": "DV-LINH-003",
+      "deviceName": "Máy lọc nước Karofi",
+      "title": "Thay lõi lọc nước định kỳ",
+      "type": "Bảo trì",
+      "domain": "Appliance",
+      "dueDate": "2026-07-05",
+      "note": "Chu kỳ thay lõi sắp đến hạn.",
+      "status": "pending",
+      "createdAt": "2026-06-22T10:55:00.000Z",
+      "updatedAt": "2026-06-22T10:55:00.000Z"
+    },
+    {
+      "id": "RM-MQQLG5BL71A0",
+      "userId": "USR-SAMPLE-001",
+      "deviceId": "DV-003",
+      "deviceName": "Tủ lạnh Samsung",
+      "title": "Bảo trì định kỳ",
+      "type": "Bảo trì",
+      "domain": "Appliance",
+      "dueDate": "2026-06-30",
+      "note": "",
+      "status": "pending",
+      "createdAt": "2026-06-23T12:01:36.753Z",
+      "updatedAt": "2026-06-23T12:01:36.753Z"
+    }
+  ],
+  "alerts": [
+    {
+      "id": "AL-001",
+      "userId": "USR-SAMPLE-001",
+      "title": "Máy lạnh cần vệ sinh",
+      "desc": "Đã 90 ngày chưa vệ sinh",
+      "level": "Ưu tiên"
+    },
+    {
+      "id": "AL-002",
+      "userId": "USR-SAMPLE-001",
+      "title": "Tủ lạnh tiêu thụ điện cao",
+      "desc": "Tăng 25% so với tháng trước",
+      "level": "Theo dõi"
+    },
+    {
+      "id": "AL-LINH-001",
+      "userId": "USR-SAMPLE-002",
+      "title": "Máy lạnh phòng ngủ cần vệ sinh",
+      "desc": "Hiệu suất lạnh giảm trong 7 ngày gần đây",
+      "level": "Ưu tiên"
+    },
+    {
+      "id": "AL-LINH-002",
+      "userId": "USR-SAMPLE-002",
+      "title": "Máy lọc nước sắp thay lõi",
+      "desc": "Còn khoảng 12 ngày trước kỳ bảo trì",
+      "level": "Nhắc lịch"
+    },
+    {
+      "id": "AL-OPS-001",
+      "userId": "USR-SAMPLE-ADMIN",
+      "title": "Đối soát dữ liệu mẫu",
+      "desc": "Tài khoản admin đang dùng bộ dữ liệu vận hành riêng",
+      "level": "Nội bộ"
+    }
+  ],
+  "technicians": [
+    {
+      "id": "TECH-088",
+      "code": "TECH-088",
+      "password": "123456",
+      "name": "Phạm Quốc Việt",
+      "role": "Kỹ thuật viên điện lạnh & vệ sinh",
+      "phone": "0908 234 567",
+      "email": "viet.technician@homecare.vn",
+      "area": "Quận 4, Quận 7, TP Thủ Đức",
+      "experience": "5 năm kinh nghiệm",
+      "completedJobs": 1284,
+      "certificates": [
+        "An toàn điện dân dụng",
+        "Vệ sinh HVAC",
+        "Sửa chữa thiết bị gia dụng"
+      ],
+      "rating": 4.9,
+      "reviews": [
+        "Đúng giờ, giải thích lỗi rõ ràng và xử lý nhanh.",
+        "Có ảnh trước/sau đầy đủ, khu vực làm việc rất gọn.",
+        "Thái độ chuyên nghiệp, tư vấn cách sử dụng thiết bị tốt."
+      ],
+      "createdAt": "2026-06-23T08:00:00.000Z"
+    }
+  ],
+  "technicianJobs": [
+    {
+      "id": "HC-2408",
+      "technicianId": "TECH-088",
+      "service": "Vệ sinh máy lạnh",
+      "customer": "Nguyễn Minh Khang",
+      "phone": "0912 456 789",
+      "address": "12 Nguyễn Văn Linh, Quận 7",
+      "time": "Hôm nay, 10:00",
+      "status": "Chờ nhận",
+      "fee": 180000,
+      "distance": "2.4 km",
+      "priority": "Gấp",
+      "note": "Máy lạnh phòng ngủ, cần dung dịch không mùi.",
+      "checklist": [
+        "Chụp ảnh trước",
+        "Vệ sinh lưới lọc",
+        "Kiểm tra dàn lạnh",
+        "Chạy thử sau xử lý"
+      ],
+      "createdAt": "2026-06-23T08:00:00.000Z"
+    },
+    {
+      "id": "HC-2411",
+      "technicianId": "TECH-088",
+      "service": "Sửa máy giặt",
+      "customer": "Trần Thu Hà",
+      "phone": "0903 112 224",
+      "address": "88 Hoàng Diệu, Quận 4",
+      "time": "Hôm nay, 13:30",
+      "status": "Đã nhận",
+      "fee": 260000,
+      "distance": "4.1 km",
+      "priority": "Tiêu chuẩn",
+      "note": "Máy báo lỗi E2, khách có mặt sau 13:00.",
+      "checklist": [
+        "Chẩn đoán lỗi",
+        "Báo linh kiện",
+        "Cập nhật trạng thái",
+        "Xác nhận nghiệm thu"
+      ],
+      "createdAt": "2026-06-23T08:15:00.000Z",
+      "updatedAt": "2026-06-23T12:50:45.695Z"
+    },
+    {
+      "id": "HC-2415",
+      "technicianId": "TECH-088",
+      "service": "Giặt sofa - nệm",
+      "customer": "Lê Bảo An",
+      "phone": "0988 661 552",
+      "address": "21 Mai Chí Thọ, TP Thủ Đức",
+      "time": "Hôm nay, 16:00",
+      "status": "Đang thực hiện",
+      "fee": 320000,
+      "distance": "6.8 km",
+      "priority": "Tiêu chuẩn",
+      "note": "Sofa vải màu xám, có vết cà phê.",
+      "checklist": [
+        "Chụp ảnh trước",
+        "Hút bụi sâu",
+        "Giặt hơi nước",
+        "Chụp ảnh sau"
+      ],
+      "createdAt": "2026-06-23T08:30:00.000Z"
+    },
+    {
+      "id": "HC-2422",
+      "technicianId": "TECH-088",
+      "service": "Vệ sinh bếp",
+      "customer": "Hoàng Ngọc Mai",
+      "phone": "0937 888 120",
+      "address": "5 Nguyễn Thị Thập, Quận 7",
+      "time": "Ngày mai, 09:00",
+      "status": "Chờ nhận",
+      "fee": 240000,
+      "distance": "3.2 km",
+      "priority": "Tiêu chuẩn",
+      "note": "Cần vệ sinh máy hút mùi và mặt đá.",
+      "checklist": [
+        "Xác nhận lịch",
+        "Vệ sinh bếp",
+        "Khử mùi",
+        "Bàn giao"
+      ],
+      "createdAt": "2026-06-23T08:45:00.000Z"
+    }
+  ],
+  "technicianLocations": [
+    {
+      "id": "LOC-MQQIF0O9J5SN",
+      "technicianId": "TECH-088",
+      "lat": 10.7777,
+      "lng": 106.7015,
+      "accuracy": "Mô phỏng",
+      "jobId": "HC-2408",
+      "createdAt": "2026-06-23T10:36:45.225Z"
+    }
+  ],
+  "technicianReports": []
+}
