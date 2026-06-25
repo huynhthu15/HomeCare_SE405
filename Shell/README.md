@@ -4,7 +4,7 @@ This is the Vite + React shell application for the Homecare microfrontend platfo
 
 Features:
 - Vite + React
-- Module Federation (vite-plugin-federation) to consume remotes: `auth`, `booking`, `services`, `profile`
+- Module Federation (vite-plugin-federation) to consume remotes: `auth`, `cleaning`, `repair`, `appliance`, `booking`, `payment`, `tracking`, `profile`
 - React Router v7
 - TailwindCSS
 
@@ -25,4 +25,4 @@ npm run dev
 
 Notes
 - Remote entries are configured as placeholders in `vite.config.js`. Update their URLs to match where your microfrontends expose their `remoteEntry.js` files.
-- The shell lazy-loads remote route modules at `auth/Routes`, `booking/Routes`, `services/Routes`, and `profile/Routes`.
+- The shell lazy-loads remote route modules at `auth/AuthApp`, `cleaning/Routes`, `repair/Routes`, `appliance/Routes`, `booking/Routes`, `payment/Routes`, `tracking/Routes`, and `profile/Routes`.
