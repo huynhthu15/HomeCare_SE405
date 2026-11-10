@@ -1133,5 +1133,194 @@
       "createdAt": "2026-06-23T10:36:45.225Z"
     }
   ],
-  "technicianReports": []
+  "technicianReports": [],
+  "paymentGateways": [
+    {
+      "id": "vnpay",
+      "name": "VNPay",
+      "detail": "QR Pay, thẻ ATM nội địa và tài khoản ngân hàng",
+      "settlement": "Tiền về sau 1 ngày làm việc",
+      "successRate": "99.2%",
+      "fee": 0,
+      "referencePrefix": "VNPAY",
+      "authTitle": "Xác thực thanh toán VNPay",
+      "authHint": "Nhập mã OTP gồm 6 chữ số được gửi từ VNPay Sandbox."
+    },
+    {
+      "id": "momo",
+      "name": "MoMo",
+      "detail": "Ví điện tử, số điện thoại và xác thực OTP",
+      "settlement": "Xác nhận gần như tức thì",
+      "successRate": "98.8%",
+      "fee": 2500,
+      "referencePrefix": "MOMO",
+      "authTitle": "Xác thực ví MoMo",
+      "authHint": "Xác nhận giao dịch bằng mã OTP trong ứng dụng MoMo Sandbox."
+    },
+    {
+      "id": "napas",
+      "name": "NAPAS",
+      "detail": "Cổng thẻ nội địa và xác thực 3D Secure",
+      "settlement": "Xác nhận trong ngày",
+      "successRate": "99.0%",
+      "fee": 1500,
+      "referencePrefix": "NAPAS",
+      "authTitle": "Xác thực thẻ NAPAS",
+      "authHint": "Nhập mã 3D Secure được gửi tới chủ thẻ."
+    },
+    {
+      "id": "cash",
+      "name": "Tiền mặt",
+      "detail": "Thanh toán trực tiếp cho kỹ thuật viên sau khi hoàn tất dịch vụ",
+      "settlement": "Kỹ thuật viên xác nhận",
+      "successRate": "Tại nhà",
+      "fee": 0,
+      "referencePrefix": "CASH",
+      "authTitle": "Xác nhận thanh toán tiền mặt",
+      "authHint": "Xác nhận khách hàng sẽ thanh toán tiền mặt cho kỹ thuật viên.",
+      "cash": true
+    }
+  ],
+  "bookingOptions": {
+    "cleaningTimeSlots": [
+      "08:00",
+      "10:00",
+      "13:30",
+      "15:30",
+      "18:00"
+    ],
+    "bookingTimeSlots": [
+      "08:00",
+      "09:30",
+      "13:00",
+      "15:30",
+      "18:00"
+    ],
+    "addOns": [
+      {
+        "id": "photo-report",
+        "label": "Báo cáo ảnh trước/sau",
+        "price": 20000
+      },
+      {
+        "id": "warranty",
+        "label": "Bảo hành mở rộng 14 ngày",
+        "price": 45000
+      },
+      {
+        "id": "priority",
+        "label": "Ưu tiên kỹ thuật viên gần nhất",
+        "price": 30000
+      }
+    ],
+    "vouchers": [
+      {
+        "code": "HOMECARE10",
+        "discount": 30000
+      }
+    ],
+    "technicians": [
+      {
+        "id": "TECH-088",
+        "name": "Phạm Quốc Việt",
+        "specialty": "Điện lạnh, vệ sinh và thiết bị gia dụng",
+        "domains": [
+          "Cleaning",
+          "Repair",
+          "Appliance",
+          "Booking"
+        ],
+        "rating": 4.9,
+        "distance": "2.1 km",
+        "jobs": 1284
+      },
+      {
+        "id": "TEC-018",
+        "name": "Nguyễn Minh Khang",
+        "specialty": "Điện lạnh và vệ sinh",
+        "domains": [
+          "Cleaning",
+          "Appliance",
+          "Booking"
+        ],
+        "rating": 4.9,
+        "distance": "2.4 km",
+        "jobs": 218
+      },
+      {
+        "id": "TEC-027",
+        "name": "Lê Hoàng An",
+        "specialty": "Điện nước dân dụng",
+        "domains": [
+          "Repair",
+          "Booking"
+        ],
+        "rating": 4.8,
+        "distance": "3.1 km",
+        "jobs": 184
+      },
+      {
+        "id": "TEC-041",
+        "name": "Phạm Gia Hân",
+        "specialty": "Thiết bị gia dụng",
+        "domains": [
+          "Appliance",
+          "Repair"
+        ],
+        "rating": 4.7,
+        "distance": "4.6 km",
+        "jobs": 156
+      }
+    ],
+    "cleaningPlatformFee": 12000,
+    "bookingPlatformFee": 15000,
+    "paymentProtectionRate": 0.015
+  },
+  "profileOptions": {
+    "notificationOptions": [
+      "Nhắc lịch trước khi kỹ thuật viên đến",
+      "Báo giá sau khi kiểm tra",
+      "Cảnh báo đến hạn bảo trì vật dụng"
+    ]
+  },
+  "repairOptions": {
+    "urgencyLevels": [
+      {
+        "id": "normal",
+        "label": "Tiêu chuẩn",
+        "fee": 0,
+        "eta": "Trong ngày"
+      },
+      {
+        "id": "priority",
+        "label": "Ưu tiên",
+        "fee": 65000,
+        "eta": "2 giờ"
+      },
+      {
+        "id": "emergency",
+        "label": "Khẩn cấp",
+        "fee": 140000,
+        "eta": "60 phút"
+      }
+    ],
+    "timeSlots": [
+      "08:30",
+      "10:30",
+      "13:00",
+      "15:00",
+      "18:30"
+    ],
+    "rooms": [
+      "Phòng khách",
+      "Bếp",
+      "Nhà tắm",
+      "Phòng ngủ",
+      "Ban công",
+      "Sân thượng"
+    ],
+    "diagnosticFee": 45000,
+    "warrantyRate": 0.08,
+    "warrantyDurationDays": 14
+  }
 }

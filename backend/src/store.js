@@ -188,6 +188,123 @@ const initialData = {
       updatedAt: new Date().toISOString()
     }
   ],
+  paymentGateways: [
+    {
+      id: "vnpay",
+      name: "VNPay",
+      detail: "QR Pay, thẻ ATM nội địa và tài khoản ngân hàng",
+      settlement: "Tiền về sau 1 ngày làm việc",
+      successRate: "99.2%",
+      fee: 0,
+      referencePrefix: "VNPAY",
+      authTitle: "Xác thực thanh toán VNPay",
+      authHint: "Nhập mã OTP gồm 6 chữ số được gửi từ VNPay Sandbox."
+    },
+    {
+      id: "momo",
+      name: "MoMo",
+      detail: "Ví điện tử, số điện thoại và xác thực OTP",
+      settlement: "Xác nhận gần như tức thì",
+      successRate: "98.8%",
+      fee: 2500,
+      referencePrefix: "MOMO",
+      authTitle: "Xác thực ví MoMo",
+      authHint: "Xác nhận giao dịch bằng mã OTP trong ứng dụng MoMo Sandbox."
+    },
+    {
+      id: "napas",
+      name: "NAPAS",
+      detail: "Cổng thẻ nội địa và xác thực 3D Secure",
+      settlement: "Xác nhận trong ngày",
+      successRate: "99.0%",
+      fee: 1500,
+      referencePrefix: "NAPAS",
+      authTitle: "Xác thực thẻ NAPAS",
+      authHint: "Nhập mã 3D Secure được gửi tới chủ thẻ."
+    },
+    {
+      id: "cash",
+      name: "Tiền mặt",
+      detail: "Thanh toán trực tiếp cho kỹ thuật viên sau khi hoàn tất dịch vụ",
+      settlement: "Kỹ thuật viên xác nhận",
+      successRate: "Tại nhà",
+      fee: 0,
+      referencePrefix: "CASH",
+      authTitle: "Xác nhận thanh toán tiền mặt",
+      authHint: "Xác nhận khách hàng sẽ thanh toán tiền mặt cho kỹ thuật viên.",
+      cash: true
+    }
+  ],
+  bookingOptions: {
+    cleaningTimeSlots: ["08:00", "10:00", "13:30", "15:30", "18:00"],
+    bookingTimeSlots: ["08:00", "09:30", "13:00", "15:30", "18:00"],
+    cleaningPlatformFee: 12000,
+    bookingPlatformFee: 15000,
+    paymentProtectionRate: 0.015,
+    addOns: [
+      { id: "photo-report", label: "Báo cáo ảnh trước/sau", price: 20000 },
+      { id: "warranty", label: "Bảo hành mở rộng 14 ngày", price: 45000 },
+      { id: "priority", label: "Ưu tiên kỹ thuật viên gần nhất", price: 30000 }
+    ],
+    vouchers: [{ code: "HOMECARE10", discount: 30000 }],
+    technicians: [
+      {
+        id: "TECH-088",
+        name: "Phạm Quốc Việt",
+        specialty: "Điện lạnh, vệ sinh và thiết bị gia dụng",
+        domains: ["Cleaning", "Repair", "Appliance", "Booking"],
+        rating: 4.9,
+        distance: "2.1 km",
+        jobs: 1284
+      },
+      {
+        id: "TEC-018",
+        name: "Nguyễn Minh Khang",
+        specialty: "Điện lạnh và vệ sinh",
+        domains: ["Cleaning", "Appliance", "Booking"],
+        rating: 4.9,
+        distance: "2.4 km",
+        jobs: 218
+      },
+      {
+        id: "TEC-027",
+        name: "Lê Hoàng An",
+        specialty: "Điện nước dân dụng",
+        domains: ["Repair", "Booking"],
+        rating: 4.8,
+        distance: "3.1 km",
+        jobs: 184
+      },
+      {
+        id: "TEC-041",
+        name: "Phạm Gia Hân",
+        specialty: "Thiết bị gia dụng",
+        domains: ["Appliance", "Repair"],
+        rating: 4.7,
+        distance: "4.6 km",
+        jobs: 156
+      }
+    ]
+  },
+  profileOptions: {
+    notificationOptions: [
+      "Nhắc lịch trước khi kỹ thuật viên đến",
+      "Báo giá sau khi kiểm tra",
+      "Cảnh báo đến hạn bảo trì vật dụng"
+    ]
+  },
+  repairOptions: {
+    urgencyLevels: [
+      { id: "normal", label: "Tiêu chuẩn", fee: 0, eta: "Trong ngày" },
+      { id: "priority", label: "Ưu tiên", fee: 65000, eta: "2 giờ" },
+      { id: "emergency", label: "Khẩn cấp", fee: 140000, eta: "60 phút" }
+    ],
+    timeSlots: ["08:30", "10:30", "13:00", "15:00", "18:30"],
+    rooms: ["Phòng khách", "Bếp", "Nhà tắm", "Phòng ngủ", "Ban công", "Sân thượng"],
+    diagnosticFee: 45000,
+    warrantyRate: 0.08,
+    warrantyDurationDays: 14
+  },
   services: [
     {
       id: "cleaning-aircon",
@@ -232,6 +349,78 @@ const initialData = {
       price: 240000,
       duration: "90 phút",
       response: "35 phút",
+      rating: 4.8,
+      demand: "Nhanh"
+    },
+    {
+      id: "repair-electronics",
+      domain: "Repair",
+      title: "Điện tử gia dụng",
+      description: "TV, loa, lò vi sóng, bếp điện.",
+      subtitle: "TV, loa, lò vi sóng, bếp điện",
+      price: 280000,
+      duration: "90 phút",
+      response: "45 phút",
+      rating: 4.7,
+      demand: "Nhanh"
+    },
+    {
+      id: "repair-general",
+      domain: "Repair",
+      title: "Bảo trì tổng hợp",
+      description: "Bản lề, khóa cửa, kệ và thiết bị nhỏ.",
+      subtitle: "Bản lề, khóa cửa, kệ, thiết bị nhỏ",
+      price: 190000,
+      duration: "60 phút",
+      response: "40 phút",
+      rating: 4.8,
+      demand: "Định kỳ"
+    },
+    {
+      id: "repair-aircon",
+      domain: "Repair",
+      title: "Sửa máy lạnh",
+      description: "Không lạnh, rò nước, lỗi remote, vệ sinh dàn nóng.",
+      subtitle: "Không lạnh, rò nước, lỗi remote, vệ sinh dàn nóng",
+      price: 260000,
+      duration: "90 phút",
+      response: "45 phút",
+      rating: 4.8,
+      demand: "Nhanh"
+    },
+    {
+      id: "repair-washer",
+      domain: "Repair",
+      title: "Sửa máy giặt",
+      description: "Không vắt, không xả nước, rung lắc, báo lỗi.",
+      subtitle: "Không vắt, không xả nước, rung lắc, báo lỗi",
+      price: 250000,
+      duration: "90 phút",
+      response: "50 phút",
+      rating: 4.7,
+      demand: "Nhanh"
+    },
+    {
+      id: "repair-lock-door",
+      domain: "Repair",
+      title: "Sửa khóa cửa",
+      description: "Khóa kẹt, bản lề xệ, tay nắm, khóa thông minh.",
+      subtitle: "Khóa kẹt, bản lề xệ, tay nắm, khóa thông minh",
+      price: 210000,
+      duration: "60 phút",
+      response: "35 phút",
+      rating: 4.8,
+      demand: "Nhanh"
+    },
+    {
+      id: "repair-internet-camera",
+      domain: "Repair",
+      title: "Internet & camera",
+      description: "Mất mạng, camera offline, đầu ghi, dây tín hiệu.",
+      subtitle: "Mất mạng, camera offline, đầu ghi, dây tín hiệu",
+      price: 230000,
+      duration: "60 phút",
+      response: "40 phút",
       rating: 4.8,
       demand: "Nhanh"
     },
@@ -418,7 +607,53 @@ const initialData = {
 export async function readDb() {
   try {
     const content = await readFile(dbPath, "utf8");
-    return JSON.parse(content);
+    const data = JSON.parse(content);
+    let updated = false;
+
+    if (!Array.isArray(data.paymentGateways)) {
+      data.paymentGateways = structuredClone(initialData.paymentGateways);
+      updated = true;
+    }
+
+    if (!data.bookingOptions) {
+      data.bookingOptions = structuredClone(initialData.bookingOptions);
+      updated = true;
+    } else {
+      for (const key of ["cleaningPlatformFee", "bookingPlatformFee", "paymentProtectionRate"]) {
+        if (data.bookingOptions[key] === undefined) {
+          data.bookingOptions[key] = initialData.bookingOptions[key];
+          updated = true;
+        }
+      }
+    }
+
+    if (!data.profileOptions) {
+      data.profileOptions = structuredClone(initialData.profileOptions);
+      updated = true;
+    }
+
+    if (!data.repairOptions) {
+      data.repairOptions = structuredClone(initialData.repairOptions);
+      updated = true;
+    }
+
+    if (!Array.isArray(data.services)) {
+      data.services = structuredClone(initialData.services);
+      updated = true;
+    } else {
+      const serviceIds = new Set(data.services.map((service) => service.id));
+      const missingServices = initialData.services.filter((service) => !serviceIds.has(service.id));
+      if (missingServices.length > 0) {
+        data.services.push(...structuredClone(missingServices));
+        updated = true;
+      }
+    }
+
+    if (updated) {
+      await writeDb(data);
+    }
+
+    return data;
   } catch (error) {
     if (error.code !== "ENOENT") {
       throw error;

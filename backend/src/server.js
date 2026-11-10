@@ -642,6 +642,7 @@ async function handleApi(pathname, request, response) {
       (user && db.profiles.find((item) => item.id === user.id)) ||
       db.profiles.find((item) => item.id === "profile-default") ||
       db.profiles[0];
+    const assignedBooking = userBookings.find((booking) => booking.technician);
 
     sendJson(response, 200, {
       user: user ? publicUser(user) : null,
@@ -651,13 +652,13 @@ async function handleApi(pathname, request, response) {
       payments: userPayments.slice(-6).reverse(),
       alerts: userAlerts,
       reminders: userReminders,
-      technician: {
-        name: "Nguyễn Văn A",
-        status: "Đang di chuyển",
-        eta: "15 phút",
-        progress: 75,
-        job: userBookings.at(-1)?.service || "Vệ sinh máy lạnh"
-      }
+      technician: assignedBooking
+        ? {
+            name: assignedBooking.technician,
+            status: assignedBooking.status,
+            job: assignedBooking.service
+          }
+        : null
     });
     return;
   }
@@ -672,6 +673,41 @@ async function handleApi(pathname, request, response) {
       200,
       domain ? services.filter((service) => service.domain === domain) : services
     );
+    return;
+  }
+
+  if (pathname === "/booking-options" && request.method === "GET") {
+    sendJson(response, 200, db.bookingOptions);
+    return;
+  }
+
+  if (pathname === "/technicians" && request.method === "GET") {
+    const url = new URL(request.url || "/", `http://${request.headers.host}`);
+    const domain = url.searchParams.get("domain");
+    const technicians = Array.isArray(db.bookingOptions.technicians)
+      ? db.bookingOptions.technicians
+      : [];
+
+    sendJson(
+      response,
+      200,
+      domain ? technicians.filter((technician) => technician.domains?.includes(domain)) : technicians
+    );
+    return;
+  }
+
+  if (pathname === "/payment-gateways" && request.method === "GET") {
+    sendJson(response, 200, db.paymentGateways);
+    return;
+  }
+
+  if (pathname === "/profile-options" && request.method === "GET") {
+    sendJson(response, 200, db.profileOptions);
+    return;
+  }
+
+  if (pathname === "/repair-options" && request.method === "GET") {
+    sendJson(response, 200, db.repairOptions);
     return;
   }
 
