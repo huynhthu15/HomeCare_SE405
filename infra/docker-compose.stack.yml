@@ -12,7 +12,7 @@ x-api-env: &api-env
   LOG_LEVEL: info
   TRUST_PROXY: '1'
   CORS_ORIGINS: http://localhost:8080
-  DATABASE_URL: postgresql://homecare:homecare@postgres:5432/homecare?schema=public
+  DATABASE_URL: postgresql://homecare:${POSTGRES_PASSWORD:-homecare}@postgres:5432/homecare?schema=public
   REDIS_URL: redis://redis:6379
   # Local demo secret only. Real deployments inject it from the CI/CD secret store.
   JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-stack-local-only-secret-replace-in-real-deploys-0123456789}
@@ -27,7 +27,7 @@ services:
     build: { context: .., dockerfile: apps/api/Dockerfile, target: migrator }
     image: ${MIGRATOR_IMAGE:-homecare-api-migrator:local}
     environment:
-      DATABASE_URL: postgresql://homecare:homecare@postgres:5432/homecare?schema=public
+      DATABASE_URL: postgresql://homecare:${POSTGRES_PASSWORD:-homecare}@postgres:5432/homecare?schema=public
     depends_on:
       postgres: { condition: service_healthy }
     restart: 'no'
@@ -79,7 +79,7 @@ services:
     volumes:
       - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
-      - '9090:9090'
+      - '127.0.0.1:9090:9090' # on a server: reach it through an SSH tunnel, never publicly
 
   grafana:
     profiles: [observability]
@@ -87,10 +87,10 @@ services:
     environment:
       GF_AUTH_ANONYMOUS_ENABLED: 'true'
       GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
-      GF_SECURITY_ADMIN_PASSWORD: homecare
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-homecare}
     volumes:
       - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
       - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
     ports:
-      - '3001:3000'
+      - '127.0.0.1:3001:3000' # on a server: reach it through an SSH tunnel, never publicly
     depends_on: [prometheus]
