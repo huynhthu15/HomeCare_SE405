@@ -1,0 +1,57 @@
+{
+  "name": "homecare",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HomeCare - on-demand home services platform (SE405 capstone)",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "postinstall": "tsc -p packages/shared/tsconfig.build.json",
+    "build:shared": "tsc -p packages/shared/tsconfig.build.json",
+    "dev": "pnpm --parallel --filter @homecare/shared --filter @homecare/api --filter @homecare/web dev",
+    "dev:api": "pnpm --filter @homecare/api dev",
+    "dev:web": "pnpm --filter @homecare/web dev",
+    "build": "pnpm -r build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "test:e2e": "pnpm --filter @homecare/api test:e2e",
+    "infra:up": "docker compose -f infra/docker-compose.yml up -d",
+    "infra:down": "docker compose -f infra/docker-compose.yml down",
+    "infra:logs": "docker compose -f infra/docker-compose.yml logs -f",
+    "stack:up": "docker compose -f infra/docker-compose.yml -f infra/docker-compose.stack.yml --profile stack up -d --build",
+    "stack:down": "docker compose -f infra/docker-compose.yml -f infra/docker-compose.stack.yml --profile stack --profile observability down",
+    "obs:up": "docker compose -f infra/docker-compose.yml -f infra/docker-compose.stack.yml --profile observability up -d",
+    "db:generate": "pnpm --filter @homecare/api db:generate",
+    "db:migrate": "pnpm --filter @homecare/api db:migrate",
+    "db:deploy": "pnpm --filter @homecare/api db:deploy",
+    "db:seed": "pnpm --filter @homecare/api db:seed",
+    "db:reset": "pnpm --filter @homecare/api db:reset",
+    "db:studio": "pnpm --filter @homecare/api db:studio"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "eslint": "^9.39.0",
+    "eslint-config-prettier": "^10.1.0",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "globals": "^16.5.0",
+    "prettier": "^3.6.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@prisma/engines",
+      "@swc/core",
+      "argon2",
+      "esbuild",
+      "prisma"
+    ]
+  }
+}
