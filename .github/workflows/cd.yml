@@ -1,0 +1,61 @@
+name: CD
+
+# Continuous delivery to a single VPS running the docker compose stack (Nginx LB + N API replicas).
+# Disabled until the team sets the repository variable DEPLOY_ENABLED=true and the
+# `production` environment secrets: SSH_HOST, SSH_USER, SSH_PRIVATE_KEY, JWT_ACCESS_SECRET.
+# Protect the `production` environment with a required reviewer (Settings -> Environments).
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: >-
+      vars.DEPLOY_ENABLED == 'true' &&
+      (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Resolve image tags
+        id: tags
+        env:
+          SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          short="${SHA::7}"
+          registry="ghcr.io/${OWNER,,}"
+          echo "api=${registry}/homecare-api:sha-${short}" >> "$GITHUB_OUTPUT"
+          echo "migrator=${registry}/homecare-api-migrator:sha-${short}" >> "$GITHUB_OUTPUT"
+          echo "edge=${registry}/homecare-edge:sha-${short}" >> "$GITHUB_OUTPUT"
+
+      - name: Rolling update over SSH
+        uses: appleboy/ssh-action@v1.2.5
+        env:
+          API_IMAGE: ${{ steps.tags.outputs.api }}
+          MIGRATOR_IMAGE: ${{ steps.tags.outputs.migrator }}
+          EDGE_IMAGE: ${{ steps.tags.outputs.edge }}
+          JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: API_IMAGE,MIGRATOR_IMAGE,EDGE_IMAGE,JWT_ACCESS_SECRET
+          script: |
+            set -euo pipefail
+            cd /opt/homecare
+            git fetch --depth 1 origin main && git reset --hard origin/main
+            compose="docker compose -f infra/docker-compose.yml -f infra/docker-compose.stack.yml --profile stack"
+            $compose pull migrate api worker edge
+            # Migrations first. They must be backward compatible with the version still running
+            # (expand -> migrate -> contract), because old replicas keep serving during the rollout.
+            $compose run --rm migrate
+            $compose up -d --no-build --remove-orphans
+            docker image prune -f
