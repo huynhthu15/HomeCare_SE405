@@ -45,8 +45,36 @@ Monorepo pnpm, NestJS + Prisma + Postgres + Redis, shared kernel (config, log, l
 
 ## Quy trình làm việc
 
-1. **Nhánh:** `feat/<module>-<mô-tả>`, `fix/...`, `chore/...`. Không push thẳng `main`.
+```
+feat/* fix/* chore/*  ──PR──▶  dev (staging)  ──release PR──▶  main (production)  ──tag vX.Y.Z
+hotfix/* (tách từ main) ──PR──▶  main, rồi merge main ngược về dev
+```
+
+1. **Nhánh:** tách từ `dev`, đặt tên `feat/<module>-<mô-tả>`, `fix/...`, `chore/...`. Không push thẳng vào `dev` hay `main`. Chi tiết: [ADR-0007](adr/0007-branching-strategy.md).
+   ```bash
+   git switch dev && git pull
+   git switch -c feat/booking-create
+   ```
 2. **Trước khi code:** viết spec ngắn trong `docs/specs/<tính-năng>.md` theo `_template.md` (dùng skill `homecare-feature-workflow`).
 3. **Commit:** Conventional Commits (`feat(booking): ...`). Lệnh `/commit` của plugin commit-commands giúp viết message.
-4. **PR:** điền template; CI phải xanh; ≥ 1 review của thành viên khác (≥ 2 nếu chạm shared kernel); chạy agent `homecare-reviewer` trước khi xin review.
-5. **Họp ngắn 2 lần/tuần:** mỗi người báo đã xong / sắp làm / đang vướng; cập nhật bảng lộ trình ở trên.
+4. **PR vào `dev`:** điền template; CI phải xanh; ≥ 1 review của thành viên khác (≥ 2 nếu chạm shared kernel); chạy agent `homecare-reviewer` trước khi xin review. Merge xong thì xóa nhánh tính năng.
+5. **Thử trên staging:** sau khi merge, CI build image và CD tự deploy `dev` lên staging. Cả nhóm thử luồng chéo module ở đây.
+6. **Phát hành (cuối mỗi phase / trước demo):** một người mở PR `dev → main` ghi tóm tắt thay đổi. Merge xong gắn tag trên `main`:
+   ```bash
+   git switch main && git pull
+   git tag -a v0.1.0 -m "Phase 0: nền móng"
+   git push origin v0.1.0
+   ```
+   CI chặn mọi PR vào `main` không xuất phát từ `dev` hoặc `hotfix/*`.
+7. **Hotfix:** tách `hotfix/<mô-tả>` từ `main`, PR vào `main`, rồi mở PR `main → dev` để bản sửa không bị mất ở lần phát hành sau.
+8. **Họp ngắn 2 lần/tuần:** mỗi người báo đã xong / sắp làm / đang vướng; cập nhật bảng lộ trình ở trên.
+
+### Cấu hình GitHub (chủ repo làm một lần)
+
+Settings → Rules → Rulesets, tạo ruleset cho `main` và `dev`:
+
+- Restrict deletions, Block force pushes.
+- Require a pull request before merging, 1 approval (bỏ qua approval cũ khi có commit mới).
+- Require status checks to pass: `Lint · Typecheck · Test · Build`, `analyze` (CodeQL); thêm `Branch policy` cho `main`.
+
+Settings → Environments: tạo `staging` và `production`; `production` bật **Required reviewers**. Mỗi environment có bộ secret riêng (xem đầu file `.github/workflows/cd.yml`). Bật deploy bằng biến repo `STAGING_DEPLOY_ENABLED=true` / `DEPLOY_ENABLED=true`.

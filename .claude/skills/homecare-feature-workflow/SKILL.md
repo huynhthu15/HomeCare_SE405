@@ -42,4 +42,4 @@ Use `superpowers:verification-before-completion`: run the commands, read the out
 1. Run the `homecare-reviewer` agent on your diff (project checklist: anti-bypass, ownership, state machine, migrations).
 2. Optionally `pr-review-toolkit` agents: `silent-failure-hunter` (swallowed errors), `type-design-analyzer`, `pr-test-analyzer`.
 3. Security-sensitive changes (auth, payments, uploads): also the `agent-skills` `security-auditor` agent.
-4. Commit with Conventional Commits (`/commit` from commit-commands), open the PR with the template, request review from another member (two for shared kernel).
+4. Commit with Conventional Commits (`/commit` from commit-commands), open the PR **against `dev`** with the template (`gh pr create --base dev`), request review from another member (two for shared kernel). Never target `main` from a feature branch — releases go `dev → main` (ADR-0007).

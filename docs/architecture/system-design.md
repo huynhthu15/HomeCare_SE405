@@ -313,16 +313,23 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-  dev[Feature branch] --> pr[Pull request]
+  feat[feat/* fix/*] --> pr[PR vào dev]
   pr --> ci{CI: lint, format, typecheck,\nunit, e2e trên Postgres+Redis, build,\nCodeQL}
-  ci -->|pass + 1 review| main[main]
-  main --> img[Build & push image lên GHCR\napi, api-migrator, edge — tag sha]
-  img --> cd{CD: chờ duyệt environment production}
+  ci -->|pass + 1 review| dev[dev]
+  dev --> imgS[Image tag dev, sha-…]
+  imgS --> stg[CD tự deploy\nSTAGING]
+  stg -->|nhóm thử luồng chéo module| rel[Release PR dev → main\nBranch policy + CI]
+  rel -->|pass + review| main[main + tag vX.Y.Z]
+  main --> imgP[Image tag latest, sha-…]
+  imgP --> cd{CD: chờ duyệt\nPRODUCTION}
   cd --> mig[Chạy migration\nexpand/contract]
   mig --> roll[docker compose up\nthay replica lần lượt]
+  hot[hotfix/*] -.-> main
+  main -.->|merge ngược| dev
 ```
 
-- Môi trường: `local` (pnpm dev + infra) → `stack` (docker compose giống production trên 1 máy) → `production` (VPS, CD qua SSH, có duyệt tay).
+- Nhánh: `dev` là nơi tích hợp và chạy staging; `main` chỉ nhận release PR từ `dev` hoặc `hotfix/*` (CI chặn các trường hợp khác). Chi tiết: [ADR-0007](../adr/0007-branching-strategy.md).
+- Môi trường: `local` (pnpm dev + infra) → `stack` (docker compose giống production trên 1 máy) → `staging` (nhánh `dev`, tự deploy) → `production` (nhánh `main`, CD qua SSH, có duyệt tay). Mỗi môi trường có server và secret riêng.
 - **Migration an toàn khi rolling update:** vì phiên bản cũ vẫn chạy trong lúc deploy, migration phải tương thích ngược (thêm cột trước, đổi code, xóa cột ở release sau).
 - Secrets chỉ nằm trong GitHub Environments; app từ chối khởi động nếu dùng secret dev ở production.
 

@@ -33,6 +33,14 @@ pnpm dev
 | Khách hàng    | `khang.nguyen@example.com`, `linh.tran@example.com` |
 | Kỹ thuật viên | `TECH-088`, `TECH-018`, `TECH-027`, `TECH-041`      |
 
+## Quy trình nhánh
+
+```
+feat/* fix/* ──PR──▶ dev (staging) ──release PR──▶ main (production)
+```
+
+Tách nhánh từ `dev` và mở PR vào `dev`. `main` chỉ nhận release PR từ `dev` hoặc `hotfix/*`. Chi tiết: [docs/team.md](docs/team.md#quy-trình-làm-việc), [ADR-0007](docs/adr/0007-branching-strategy.md).
+
 ## Kiểm tra chất lượng
 
 ```bash

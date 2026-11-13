@@ -1,10 +1,13 @@
 name: CI
 
+# Branch flow (docs/adr/0007-branching-strategy.md):
+#   feat/* | fix/*  --PR-->  dev (staging)  --release PR-->  main (production)
+#   hotfix/*        --PR-->  main, then main is merged back into dev
 on:
   pull_request:
-    branches: [main]
+    branches: [main, dev]
   push:
-    branches: [main]
+    branches: [main, dev]
   workflow_dispatch:
 
 concurrency:
@@ -15,6 +18,23 @@ permissions:
   contents: read
 
 jobs:
+  branch-policy:
+    name: Branch policy
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Only dev (release) or hotfix/* may target main
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          case "$HEAD_REF" in
+            dev|hotfix/*) echo "OK: $HEAD_REF -> main" ;;
+            *)
+              echo "::error::Open this PR against dev. Only dev (release) or hotfix/* may merge into main, got '$HEAD_REF'."
+              exit 1
+              ;;
+          esac
+
   quality:
     name: Lint · Typecheck · Test · Build
     runs-on: ubuntu-latest
@@ -60,7 +80,8 @@ jobs:
   images:
     name: Build & push Docker images
     needs: quality
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # dev -> images for staging, main -> images for production
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -89,9 +110,11 @@ jobs:
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: ghcr.io/${{ github.repository_owner }}/homecare-${{ matrix.name }}
+          # sha-<short> (what CD deploys), the branch name (dev / main), and latest for main only
           tags: |
             type=sha,format=short
-            type=raw,value=latest
+            type=ref,event=branch
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
       - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .

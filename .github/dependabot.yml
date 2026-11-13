@@ -1,7 +1,9 @@
+# Dependency updates go through dev (staging) like every other change.
 version: 2
 updates:
   - package-ecosystem: npm
     directory: /
+    target-branch: dev
     schedule: { interval: weekly }
     open-pull-requests-limit: 5
     groups:
@@ -12,7 +14,9 @@ updates:
         { patterns: ['eslint*', 'typescript*', 'prettier', 'vite', 'vitest', 'jest', 'ts-jest'] }
   - package-ecosystem: github-actions
     directory: /
+    target-branch: dev
     schedule: { interval: weekly }
   - package-ecosystem: docker
     directories: [/apps/api, /infra/nginx]
+    target-branch: dev
     schedule: { interval: weekly }

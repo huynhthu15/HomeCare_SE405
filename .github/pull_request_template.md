@@ -1,3 +1,5 @@
+<!-- Nhánh đích: PR tính năng/sửa lỗi vào `dev`. Chỉ release PR `dev → main` hoặc `hotfix/*` được vào `main` (ADR-0007). -->
+
 ## Mục tiêu
 
 <!-- Thay đổi này giải quyết vấn đề gì? Link spec/issue: docs/specs/... -->

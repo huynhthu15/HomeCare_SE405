@@ -49,7 +49,8 @@ Reference implementation for all of the above: `apps/api/src/modules/identity` +
 ## Conventions
 
 - Code, identifiers, commits: English. UI text, user-facing error messages, docs: Vietnamese.
-- Branches `feat/<module>-<topic>`; Conventional Commits; PR template checklist must be satisfied.
+- Branches: start from `dev`, name `feat/<module>-<topic>` / `fix/...` / `chore/...`, open the PR **into `dev`** (staging). Only a release PR `dev → main` or `hotfix/*` may target `main` (CI job "Branch policy" enforces it). See ADR-0007.
+- Conventional Commits; PR template checklist must be satisfied. No AI co-author trailers in commits.
 - Money = `Int` VND. Ids = UUID v7. Times = `timestamptz`.
 - Web: access token in memory only (`apps/web/src/lib/api-client.ts`); never localStorage.
 
