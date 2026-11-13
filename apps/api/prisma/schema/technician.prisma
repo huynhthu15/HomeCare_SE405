@@ -1,0 +1,70 @@
+// Modules: technician + tracking + notifications — owner TV4
+
+model TechnicianProfile {
+  userId          String          @id @map("user_id") @db.Uuid
+  skills         ServiceDomain[]
+  serviceAreas    String[]        @map("service_areas")
+  experienceYears Int             @default(0) @map("experience_years")
+  rating          Float           @default(5)
+  completedJobs   Int             @default(0) @map("completed_jobs")
+  isOnline        Boolean         @default(false) @map("is_online")
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+  offers   DispatchOffer[]
+  reports  JobReport[]
+
+  @@map("technician_profiles")
+}
+
+/// Completion evidence. Photos live in object storage (MinIO/S3); only object keys are stored.
+model JobReport {
+  id             String   @id @default(uuid(7)) @db.Uuid
+  bookingId      String   @unique @map("booking_id") @db.Uuid
+  technicianId   String   @map("technician_id") @db.Uuid
+  beforePhotoKey String   @map("before_photo_key")
+  afterPhotoKey  String   @map("after_photo_key")
+  note           String?
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  booking    Booking           @relation(fields: [bookingId], references: [id])
+  technician TechnicianProfile @relation(fields: [technicianId], references: [userId])
+
+  @@map("job_reports")
+}
+
+/// Sampled GPS history (latest position lives in Redis). High write volume -> BigInt id, no FKs.
+model LocationPing {
+  id           BigInt   @id @default(autoincrement())
+  technicianId String   @map("technician_id") @db.Uuid
+  bookingId    String?  @map("booking_id") @db.Uuid
+  lat          Float
+  lng          Float
+  accuracy     Float?
+  /// Set when the jump from the previous ping implies an impossible speed (GPS spoofing signal)
+  flagged      Boolean  @default(false)
+  recordedAt   DateTime @map("recorded_at") @db.Timestamptz(3)
+  receivedAt   DateTime @default(now()) @map("received_at") @db.Timestamptz(3)
+
+  @@index([bookingId, recordedAt])
+  @@index([technicianId, recordedAt])
+  @@map("location_pings")
+}
+
+model Notification {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  type      String
+  title     String
+  body      String
+  data      Json?
+  readAt    DateTime? @map("read_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt(sort: Desc)])
+  @@map("notifications")
+}

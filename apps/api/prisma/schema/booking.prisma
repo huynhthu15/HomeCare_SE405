@@ -1,0 +1,120 @@
+// Modules: booking + dispatch — owner TV2
+// State machine lives in src/modules/booking/booking.state.ts. `version` enables optimistic locking.
+// TODO(TV2): add a raw-SQL migration with a GiST exclusion constraint so one technician can never
+// hold two active bookings whose [scheduled_start, scheduled_end) ranges overlap:
+//   CREATE EXTENSION IF NOT EXISTS btree_gist;
+//   ALTER TABLE bookings ADD CONSTRAINT bookings_no_overlap EXCLUDE USING gist (
+//     technician_id WITH =, tstzrange(scheduled_start, scheduled_end) WITH &&)
+//   WHERE (status IN ('ASSIGNED','EN_ROUTE','IN_PROGRESS'));
+
+enum BookingStatus {
+  PENDING_PAYMENT
+  CONFIRMED_CASH
+  PAID
+  ASSIGNED
+  EN_ROUTE
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  EXPIRED
+}
+
+enum PaymentMethod {
+  GATEWAY
+  CASH
+}
+
+model Booking {
+  id             String        @id @default(uuid(7)) @db.Uuid
+  code           String        @unique
+  customerId     String        @map("customer_id") @db.Uuid
+  technicianId   String?       @map("technician_id") @db.Uuid
+  serviceId      String        @map("service_id") @db.Uuid
+  /// Address copied at booking time so later edits don't rewrite history
+  addressSnapshot Json         @map("address_snapshot")
+  lat            Float
+  lng            Float
+  scheduledStart DateTime      @map("scheduled_start") @db.Timestamptz(3)
+  scheduledEnd   DateTime      @map("scheduled_end") @db.Timestamptz(3)
+  status         BookingStatus @default(PENDING_PAYMENT)
+  paymentMethod  PaymentMethod @map("payment_method")
+  subtotal       Int
+  addOnTotal     Int           @default(0) @map("add_on_total")
+  discount       Int           @default(0)
+  platformFee    Int           @default(0) @map("platform_fee")
+  total          Int
+  voucherCode    String?       @map("voucher_code")
+  note           String?
+  version        Int           @default(0)
+  cancelReason   String?       @map("cancel_reason")
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  customer      User                   @relation("BookingCustomer", fields: [customerId], references: [id])
+  technician    TechnicianProfile?     @relation(fields: [technicianId], references: [userId])
+  service       Service                @relation(fields: [serviceId], references: [id])
+  addOns        BookingAddOn[]
+  statusHistory BookingStatusHistory[]
+  payments      Payment[]
+  offers        DispatchOffer[]
+  report        JobReport?
+
+  @@index([customerId, createdAt(sort: Desc)])
+  @@index([technicianId, scheduledStart])
+  @@index([status])
+  @@map("bookings")
+}
+
+model BookingAddOn {
+  bookingId String @map("booking_id") @db.Uuid
+  addOnId   String @map("add_on_id") @db.Uuid
+  /// Price snapshot at booking time
+  price     Int
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  addOn   AddOn   @relation(fields: [addOnId], references: [id])
+
+  @@id([bookingId, addOnId])
+  @@map("booking_add_ons")
+}
+
+model BookingStatusHistory {
+  id        String         @id @default(uuid(7)) @db.Uuid
+  bookingId String         @map("booking_id") @db.Uuid
+  from      BookingStatus?
+  to        BookingStatus
+  actorId   String?        @map("actor_id") @db.Uuid
+  actorRole UserRole?      @map("actor_role")
+  reason    String?
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId, createdAt])
+  @@map("booking_status_history")
+}
+
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
+
+/// Dispatch: a booking is offered to one technician at a time; offers expire (BullMQ delayed job).
+model DispatchOffer {
+  id           String      @id @default(uuid(7)) @db.Uuid
+  bookingId    String      @map("booking_id") @db.Uuid
+  technicianId String      @map("technician_id") @db.Uuid
+  status       OfferStatus @default(PENDING)
+  expiresAt    DateTime    @map("expires_at") @db.Timestamptz(3)
+  respondedAt  DateTime?   @map("responded_at") @db.Timestamptz(3)
+  createdAt    DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  booking    Booking           @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  technician TechnicianProfile @relation(fields: [technicianId], references: [userId])
+
+  @@index([technicianId, status])
+  @@index([bookingId])
+  @@map("dispatch_offers")
+}

@@ -1,0 +1,75 @@
+// Module: payments — owner TV3
+// Amounts are copied from Booking.total on the server. Only a verified IPN may set SUCCEEDED.
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  CANCELLED
+  EXPIRED
+  REFUNDED
+}
+
+model Payment {
+  id             String        @id @default(uuid(7)) @db.Uuid
+  bookingId      String        @map("booking_id") @db.Uuid
+  amount         Int
+  currency       String        @default("VND")
+  method         PaymentMethod
+  /// e.g. "mock-vnpay", "vnpay", "cash"
+  provider       String
+  status         PaymentStatus @default(PENDING)
+  /// Our reference sent to the gateway (vnp_TxnRef); unique so IPNs map 1:1
+  txnRef         String        @unique @map("txn_ref")
+  /// Gateway transaction number from the IPN (vnp_TransactionNo)
+  providerTxnNo  String?       @unique @map("provider_txn_no")
+  idempotencyKey String?       @map("idempotency_key")
+  paidAt         DateTime?     @map("paid_at") @db.Timestamptz(3)
+  expiresAt      DateTime      @map("expires_at") @db.Timestamptz(3)
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  booking Booking        @relation(fields: [bookingId], references: [id])
+  events  PaymentEvent[]
+  refunds Refund[]
+
+  @@index([bookingId])
+  @@index([status, expiresAt])
+  @@map("payments")
+}
+
+/// Raw, append-only log of every gateway callback (IPN/return), valid or not. Useful for audits and replay.
+model PaymentEvent {
+  id             String   @id @default(uuid(7)) @db.Uuid
+  paymentId      String?  @map("payment_id") @db.Uuid
+  provider       String
+  kind           String
+  payload        Json
+  signatureValid Boolean  @map("signature_valid")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  payment Payment? @relation(fields: [paymentId], references: [id])
+
+  @@index([paymentId])
+  @@map("payment_events")
+}
+
+enum RefundStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+model Refund {
+  id        String       @id @default(uuid(7)) @db.Uuid
+  paymentId String       @map("payment_id") @db.Uuid
+  amount    Int
+  reason    String
+  status    RefundStatus @default(PENDING)
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  payment Payment @relation(fields: [paymentId], references: [id])
+
+  @@index([paymentId])
+  @@map("refunds")
+}
