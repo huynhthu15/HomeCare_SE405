@@ -1,0 +1,96 @@
+# Production-like stack on one machine, layered on top of docker-compose.yml:
+#
+#   pnpm stack:up                       # edge LB + 3 API replicas + worker + migrations
+#   pnpm obs:up                         # + Prometheus (http://localhost:9090) + Grafana (http://localhost:3001)
+#   docker compose -f infra/docker-compose.yml -f infra/docker-compose.stack.yml --profile stack \
+#     up -d --scale api=5               # scale out, Nginx picks the new replicas up via DNS
+#
+# App: http://localhost:8080  (every API response carries `x-served-by: <replica hostname>`)
+
+x-api-env: &api-env
+  NODE_ENV: production
+  LOG_LEVEL: info
+  TRUST_PROXY: '1'
+  CORS_ORIGINS: http://localhost:8080
+  DATABASE_URL: postgresql://homecare:homecare@postgres:5432/homecare?schema=public
+  REDIS_URL: redis://redis:6379
+  # Local demo secret only. Real deployments inject it from the CI/CD secret store.
+  JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-stack-local-only-secret-replace-in-real-deploys-0123456789}
+  JWT_ACCESS_TTL_SECONDS: '900'
+  REFRESH_TOKEN_TTL_DAYS: '14'
+  # Browsers treat http://localhost as a secure context, so Secure cookies still work in the demo
+  COOKIE_SECURE: 'true'
+
+services:
+  migrate:
+    profiles: [stack]
+    build: { context: .., dockerfile: apps/api/Dockerfile, target: migrator }
+    image: ${MIGRATOR_IMAGE:-homecare-api-migrator:local}
+    environment:
+      DATABASE_URL: postgresql://homecare:homecare@postgres:5432/homecare?schema=public
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: 'no'
+
+  api:
+    profiles: [stack]
+    build: { context: .., dockerfile: apps/api/Dockerfile, target: runtime }
+    image: ${API_IMAGE:-homecare-api:local}
+    environment:
+      <<: *api-env
+      APP_ROLE: api
+    deploy:
+      replicas: 3
+      resources:
+        limits: { cpus: '0.50', memory: 384M }
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+    stop_grace_period: 20s # graceful shutdown: finish in-flight requests before exit
+    restart: unless-stopped
+
+  worker:
+    profiles: [stack]
+    # Same image as `api` (build is cached), different process role
+    build: { context: .., dockerfile: apps/api/Dockerfile, target: runtime }
+    image: ${API_IMAGE:-homecare-api:local}
+    command: ['node', 'dist/worker.js']
+    environment:
+      <<: *api-env
+      APP_ROLE: worker
+    depends_on:
+      api: { condition: service_started }
+    healthcheck: { disable: true }
+    restart: unless-stopped
+
+  edge:
+    profiles: [stack]
+    build: { context: .., dockerfile: infra/nginx/Dockerfile }
+    image: ${EDGE_IMAGE:-homecare-edge:local}
+    ports:
+      - '8080:80'
+    depends_on:
+      api: { condition: service_healthy }
+    restart: unless-stopped
+
+  prometheus:
+    profiles: [observability]
+    image: prom/prometheus:v3.5.0
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - '9090:9090'
+
+  grafana:
+    profiles: [observability]
+    image: grafana/grafana:12.1.0
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: 'true'
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_SECURITY_ADMIN_PASSWORD: homecare
+    volumes:
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - '3001:3000'
+    depends_on: [prometheus]
