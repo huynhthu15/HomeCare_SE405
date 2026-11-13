@@ -1,0 +1,76 @@
+// Module: profile — owner TV1
+// Customer profile, addresses, home appliances and maintenance reminders.
+
+model CustomerProfile {
+  userId           String   @id @map("user_id") @db.Uuid
+  avatarUrl        String?  @map("avatar_url")
+  defaultAddressId String?  @map("default_address_id") @db.Uuid
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("customer_profiles")
+}
+
+model Address {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  label     String
+  line1     String
+  ward      String?
+  district  String
+  city      String
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("addresses")
+}
+
+model Device {
+  id            String    @id @default(uuid(7)) @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  name          String
+  type          String
+  brand         String?
+  room          String?
+  healthScore   Int       @default(100) @map("health_score")
+  warrantyUntil DateTime? @map("warranty_until") @db.Date
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reminders MaintenanceReminder[]
+
+  @@index([userId])
+  @@map("devices")
+}
+
+enum ReminderStatus {
+  PENDING
+  SCHEDULED
+  DONE
+}
+
+model MaintenanceReminder {
+  id        String         @id @default(uuid(7)) @db.Uuid
+  userId    String         @map("user_id") @db.Uuid
+  deviceId  String?        @map("device_id") @db.Uuid
+  title     String
+  domain    ServiceDomain
+  dueDate   DateTime       @map("due_date") @db.Date
+  status    ReminderStatus @default(PENDING)
+  bookingId String?        @map("booking_id") @db.Uuid
+  note      String?
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  device Device? @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status, dueDate])
+  @@map("maintenance_reminders")
+}

@@ -1,0 +1,22 @@
+# Dependency updates go through dev (staging) like every other change.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    target-branch: dev
+    schedule: { interval: weekly }
+    open-pull-requests-limit: 5
+    groups:
+      nestjs: { patterns: ['@nestjs/*'] }
+      prisma: { patterns: ['prisma', '@prisma/*'] }
+      react: { patterns: ['react', 'react-dom', '@types/react*', 'react-router'] }
+      tooling:
+        { patterns: ['eslint*', 'typescript*', 'prettier', 'vite', 'vitest', 'jest', 'ts-jest'] }
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: dev
+    schedule: { interval: weekly }
+  - package-ecosystem: docker
+    directories: [/apps/api, /infra/nginx]
+    target-branch: dev
+    schedule: { interval: weekly }

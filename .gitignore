@@ -5,6 +5,12 @@ dist/
 **/dist/
 dist-ssr/
 **/dist-ssr/
+build/
+coverage/
+*.tsbuildinfo
+
+# Prisma generated client
+apps/api/src/generated/
 
 .env
 .env.*
@@ -16,5 +22,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Claude Code: personal settings stay local, shared settings are committed
+.claude/settings.local.json
+
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json

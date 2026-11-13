@@ -1,0 +1,23 @@
+{
+  "name": "@homecare/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Contracts shared by API, web and mobile: zod schemas, enums, error codes, realtime events",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "test": "echo \"(shared) no tests yet\""
+  },
+  "dependencies": {
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3"
+  }
+}

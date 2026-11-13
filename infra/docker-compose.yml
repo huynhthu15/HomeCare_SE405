@@ -1,0 +1,66 @@
+# Data stores shared by local development (pnpm infra:up) and the full stack (docker-compose.stack.yml).
+# The API and web app run on the host in development and talk to these containers.
+#
+# Security: every port is bound to 127.0.0.1, so on a server nothing here is reachable from the
+# Internet (only the Nginx edge in the stack file is public). Passwords come from environment
+# variables; the defaults below are for local development only. A real deployment must set
+# POSTGRES_PASSWORD (URL-safe, e.g. hex) and MINIO_ROOT_PASSWORD — CD refuses to run without them.
+# Note: POSTGRES_PASSWORD is only applied when the pgdata volume is first created.
+name: homecare
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: homecare
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-homecare}
+      POSTGRES_DB: homecare
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U homecare -d homecare']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: ['redis-server', '--appendonly', 'yes']
+    ports:
+      - '127.0.0.1:6379:6379'
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # Development only: catches every outgoing email. UI: http://localhost:8025
+  mailpit:
+    profiles: [dev]
+    image: axllent/mailpit:latest
+    ports:
+      - '127.0.0.1:1025:1025'
+      - '127.0.0.1:8025:8025'
+
+  # S3-compatible object storage for job photos. Console: http://localhost:9001
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: homecare
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-homecare-secret}
+    ports:
+      - '127.0.0.1:9000:9000'
+      - '127.0.0.1:9001:9001'
+    volumes:
+      - miniodata:/data
+
+volumes:
+  pgdata:
+  redisdata:
+  miniodata:

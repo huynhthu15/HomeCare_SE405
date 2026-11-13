@@ -1,0 +1,83 @@
+name: CD
+
+# Continuous delivery of the docker compose stack (Nginx LB + N API replicas) over SSH.
+#   push to dev  -> CI green -> deploy to the `staging` environment    (test here before release)
+#   push to main -> CI green -> deploy to the `production` environment (protect it with a required reviewer)
+#
+# Both are disabled until the team sets repository variables:
+#   STAGING_DEPLOY_ENABLED=true     and/or     DEPLOY_ENABLED=true
+# Each GitHub environment (`staging`, `production`) holds its OWN secrets, so staging runs on its own server:
+#   SSH_HOST, SSH_USER, SSH_PRIVATE_KEY, JWT_ACCESS_SECRET,
+#   POSTGRES_PASSWORD (URL-safe, e.g. `openssl rand -hex 24`), MINIO_ROOT_PASSWORD, GRAFANA_ADMIN_PASSWORD.
+# Only the Nginx edge (port 8080) is public; data stores and dashboards bind to 127.0.0.1.
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main, dev]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.event.workflow_run.head_branch || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Only CI runs triggered by a push (a merge) deploy; CI runs for pull requests never do.
+    if: >-
+      (github.event_name == 'workflow_dispatch' ||
+        (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success')) &&
+      (
+        ((github.event.workflow_run.head_branch || github.ref_name) == 'main' && vars.DEPLOY_ENABLED == 'true') ||
+        ((github.event.workflow_run.head_branch || github.ref_name) == 'dev' && vars.STAGING_DEPLOY_ENABLED == 'true')
+      )
+    runs-on: ubuntu-latest
+    environment: ${{ (github.event.workflow_run.head_branch || github.ref_name) == 'main' && 'production' || 'staging' }}
+    steps:
+      - name: Resolve branch and image tags
+        id: tags
+        env:
+          SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+          BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          short="${SHA::7}"
+          registry="ghcr.io/${OWNER,,}"
+          echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"
+          echo "api=${registry}/homecare-api:sha-${short}" >> "$GITHUB_OUTPUT"
+          echo "migrator=${registry}/homecare-api-migrator:sha-${short}" >> "$GITHUB_OUTPUT"
+          echo "edge=${registry}/homecare-edge:sha-${short}" >> "$GITHUB_OUTPUT"
+
+      - name: Rolling update over SSH
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        env:
+          DEPLOY_BRANCH: ${{ steps.tags.outputs.branch }}
+          API_IMAGE: ${{ steps.tags.outputs.api }}
+          MIGRATOR_IMAGE: ${{ steps.tags.outputs.migrator }}
+          EDGE_IMAGE: ${{ steps.tags.outputs.edge }}
+          JWT_ACCESS_SECRET: ${{ secrets.JWT_ACCESS_SECRET }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
+          GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: DEPLOY_BRANCH,API_IMAGE,MIGRATOR_IMAGE,EDGE_IMAGE,JWT_ACCESS_SECRET,POSTGRES_PASSWORD,MINIO_ROOT_PASSWORD,GRAFANA_ADMIN_PASSWORD
+          script: |
+            set -euo pipefail
+            # Never fall back to the local-demo defaults baked into the compose files
+            : "${JWT_ACCESS_SECRET:?JWT_ACCESS_SECRET secret is missing}"
+            : "${POSTGRES_PASSWORD:?POSTGRES_PASSWORD secret is missing}"
+            : "${MINIO_ROOT_PASSWORD:?MINIO_ROOT_PASSWORD secret is missing}"
+            : "${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD secret is missing}"
+            cd /opt/homecare
+            git fetch --depth 1 origin "$DEPLOY_BRANCH" && git reset --hard "origin/$DEPLOY_BRANCH"
+            compose="docker compose -f infra/docker-compose.yml -f infra/docker-compose.stack.yml --profile stack"
+            $compose pull migrate api worker edge
+            # Migrations first. They must be backward compatible with the version still running
+            # (expand -> migrate -> contract), because old replicas keep serving during the rollout.
+            $compose run --rm migrate
+            $compose up -d --no-build --remove-orphans
+            docker image prune -f

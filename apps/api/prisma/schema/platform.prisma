@@ -1,0 +1,51 @@
+// Shared kernel (src/common) — reviewed by all owners
+
+/// Who did what, when. Written for every security event and every state transition.
+model AuditLog {
+  id         String    @id @default(uuid(7)) @db.Uuid
+  actorId    String?   @map("actor_id") @db.Uuid
+  actorRole  UserRole? @map("actor_role")
+  action     String
+  entityType String    @map("entity_type")
+  entityId   String?   @map("entity_id")
+  ip         String?
+  metadata   Json?
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([entityType, entityId])
+  @@index([actorId, createdAt])
+  @@map("audit_logs")
+}
+
+/// Transactional outbox: domain events are inserted in the SAME transaction as the state change,
+/// then a worker relays them (at-least-once) to in-process handlers / BullMQ / Socket.IO.
+model OutboxEvent {
+  id            String    @id @default(uuid(7)) @db.Uuid
+  aggregateType String    @map("aggregate_type")
+  aggregateId   String    @map("aggregate_id")
+  type          String
+  payload       Json
+  attempts      Int       @default(0)
+  lastError     String?   @map("last_error")
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  publishedAt   DateTime? @map("published_at") @db.Timestamptz(3)
+
+  @@index([publishedAt, createdAt])
+  @@map("outbox_events")
+}
+
+/// Stores the first response for an Idempotency-Key so client retries never double-book or double-charge.
+model IdempotencyKey {
+  userId         String   @map("user_id") @db.Uuid
+  scope          String
+  key            String
+  requestHash    String   @map("request_hash")
+  responseStatus Int?     @map("response_status")
+  responseBody   Json?    @map("response_body")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  expiresAt      DateTime @map("expires_at") @db.Timestamptz(3)
+
+  @@id([userId, scope, key])
+  @@index([expiresAt])
+  @@map("idempotency_keys")
+}

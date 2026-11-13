@@ -1,0 +1,18 @@
+// HomeCare database — PostgreSQL 16.
+// One .prisma file per bounded context. Owners are listed at the top of each file.
+// Conventions:
+//   - ids: UUID v7 (time-ordered, index friendly)
+//   - money: Int, Vietnamese dong (VND has no minor unit)
+//   - timestamps: timestamptz
+//   - table names: snake_case plural via @@map
+//   - Never `include` another module's relations in queries: call that module's service.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
