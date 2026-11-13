@@ -20,7 +20,16 @@ export function configureApp(app: NestExpressApplication): void {
   // Behind Nginx: trust X-Forwarded-For so req.ip / rate limits use the real client IP
   app.set('trust proxy', config.get('TRUST_PROXY'));
   app.disable('x-powered-by');
-  app.use(helmet({ contentSecurityPolicy: config.isProduction ? undefined : false }));
+  // Helmet defaults everywhere, including its Content-Security-Policy. Swagger UI works under the
+  // default CSP because @nestjs/swagger serves its init script as a file, not an inline script.
+  // Only `upgrade-insecure-requests` waits for production: dev serves Swagger over plain http.
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: { upgradeInsecureRequests: config.isProduction ? [] : null },
+      },
+    }),
+  );
   app.use(cookieParser());
   app.use(httpMetricsMiddleware);
   // Lets you SEE the load balancer at work: each response names the replica that served it

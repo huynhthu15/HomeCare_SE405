@@ -63,6 +63,13 @@ describe('Identity (e2e)', () => {
     expect(ready.body.info).toMatchObject({ database: { status: 'up' }, redis: { status: 'up' } });
   });
 
+  it('sends security headers, including a Content-Security-Policy, on every response', async () => {
+    const res = await request(http).get('/health/live').expect(200);
+    expect(res.headers['content-security-policy']).toContain("default-src 'self'");
+    expect(res.headers['x-content-type-options']).toBe('nosniff');
+    expect(res.headers['x-powered-by']).toBeUndefined();
+  });
+
   it('rejects anonymous access with the shared error shape', async () => {
     const res = await request(http).get(`${API}/auth/me`).expect(401);
     expect(res.body).toMatchObject({ statusCode: 401, code: 'UNAUTHENTICATED' });
