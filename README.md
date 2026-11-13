@@ -1,82 +1,76 @@
-# HomeCare Super App
+# HomeCare — nền tảng dịch vụ chăm sóc nhà
 
-HomeCare is a single React application for customer services and technician workflows. All frontend modules are bundled and served by one Vite app; the Node.js backend remains a separate API service.
+Đồ án SE405 — nhóm 4 người. Khách hàng đặt dịch vụ vệ sinh/sửa chữa/bảo trì, thanh toán qua cổng mô phỏng VNPay và theo dõi kỹ thuật viên **theo thời gian thực**; kỹ thuật viên làm việc trên app di động; quản trị viên điều hành qua web console.
 
-## Features
+**Kiến trúc:** NestJS modular monolith · PostgreSQL + Prisma · Redis · Nginx load balancer (nhiều replica) · React + TypeScript · Expo · Docker · GitHub Actions CI/CD · Prometheus/Grafana.
+Chi tiết: [docs/architecture/system-design.md](docs/architecture/system-design.md) · Quyết định kiến trúc: [docs/adr](docs/adr) · Phân công: [docs/team.md](docs/team.md)
 
-- Customer and technician sign-in from one portal.
-- Customer dashboard with cleaning, repair, appliance, booking, tracking, payment, and profile features.
-- Technician workspace for jobs, status updates, location, and reports.
-- User-scoped data stored by the backend in `backend/data/db.json`.
+## Yêu cầu
 
-## Structure
+- Node.js ≥ 22 (khuyên dùng 24) và pnpm 10: `corepack enable` (hoặc `npm i -g pnpm@10`)
+- Docker Desktop
 
-```text
-homecare-superapp/
-├─ src/
-│  ├─ portal/       # Shared sign-in and role selection
-│  ├─ customer/     # Customer dashboard and navigation
-│  └─ features/     # Auth and business feature modules
-├─ public/          # Static assets
-└─ backend/         # API server and JSON data store
-```
-
-## Requirements
-
-- Node.js 20+
-- npm
-
-## Install
-
-Install the frontend and backend dependencies once:
+## Chạy lần đầu
 
 ```bash
-npm install
-cd backend
-npm install
+pnpm install
+pnpm infra:up                     # Postgres, Redis, Mailpit, MinIO
+cp .env.example apps/api/.env     # PowerShell: Copy-Item .env.example apps/api/.env
+pnpm db:migrate
+pnpm db:seed
+pnpm dev
 ```
 
-## Run
+- Web: <http://127.0.0.1:3020>
+- API + Swagger: <http://localhost:4000/api/docs>
+- Mailpit (email dev): <http://localhost:8025>
 
-Start the backend in one terminal:
+### Tài khoản mẫu (mật khẩu chung: `Homecare@123`)
+
+| Vai trò       | Đăng nhập bằng                                      |
+| ------------- | --------------------------------------------------- |
+| Quản trị      | `admin@homecare.test`                               |
+| Khách hàng    | `khang.nguyen@example.com`, `linh.tran@example.com` |
+| Kỹ thuật viên | `TECH-088`, `TECH-018`, `TECH-027`, `TECH-041`      |
+
+## Kiểm tra chất lượng
 
 ```bash
-cd backend
-npm run dev
+pnpm lint
+pnpm typecheck
+pnpm test          # unit
+pnpm test:e2e      # e2e trên Postgres/Redis thật (DB homecare_test), cần infra:up
 ```
 
-Start the single frontend app in another terminal from the repository root:
+## Chạy như production (load balancer + nhiều replica)
 
 ```bash
-npm run dev
+pnpm stack:up      # http://localhost:8080 — Nginx + 3 replica API + worker
+pnpm obs:up        # Prometheus :9090, Grafana :3001 (dashboard "HomeCare API — overview")
+docker compose -f infra/docker-compose.yml -f infra/docker-compose.stack.yml --profile stack up -d --scale api=5
+k6 run tests/load/auth-smoke.js
 ```
 
-Open <http://127.0.0.1:3020>. The API defaults to `http://localhost:4000`; override it with `VITE_API_URL` when needed.
+Mỗi response có header `x-served-by` cho biết replica nào đã xử lý.
 
-## Sample Accounts
+## Làm việc với Claude Code
 
-| Role | Account | Password |
-| --- | --- | --- |
-| Customer | `khang.nguyen@example.com` | `123456` |
-| Customer | `linh.tran@example.com` | `123456` |
-| Sample admin | `admin@homecare.test` | `123456` |
-| Technician | `TECH-088` | `123456` |
+Repo đã khai báo sẵn plugin trong `.claude/settings.json`. Khi mở repo và chọn tin cậy thư mục, Claude Code sẽ hỏi cài các plugin sau:
 
-## Build and Check
+- **superpowers** — quy trình brainstorm → plan → TDD → review
+- **agent-skills** — spec, API design, security, CI/CD, ADR
+- **feature-dev**, **pr-review-toolkit**, **security-guidance**, **commit-commands**, **typescript-lsp**, **frontend-design** — plugin chính thức của Anthropic
+- **c4-architecture**, **database-design**, **backend-api-security**, **payment-processing**, **cicd-automation**, **observability-monitoring** — từ wshobson/agents
+- **document-skills** — viết báo cáo đồ án (docx, pptx, pdf)
 
-Build the complete frontend:
+Ngoài ra repo có skill và agent riêng của dự án trong `.claude/skills` và `.claude/agents`. Quy trình làm việc chi tiết nằm trong [CLAUDE.md](CLAUDE.md).
+
+Plugin `typescript-lsp` cần cài thêm language server:
 
 ```bash
-npm run build
+npm i -g typescript-language-server typescript
 ```
 
-Check the backend server syntax:
+## Code cũ
 
-```bash
-cd backend
-node --check src/server.js
-```
-
-## Backend API
-
-The backend runs independently on port `4000` and stores data in `backend/data/db.json`. It provides authentication, technician workspace, dashboard, services, devices, reminders, bookings, payments, and profile APIs. Service and application options are served by `/booking-options`, `/repair-options`, `/profile-options`, `/payment-gateways`, and `/technicians`; backend defaults are maintained in `backend/src/store.js` and migrated into existing databases when missing.
+Prototype JS ban đầu được giữ trong [`legacy/`](legacy) để tham khảo khi port giao diện. Thư mục này không còn được chạy.
