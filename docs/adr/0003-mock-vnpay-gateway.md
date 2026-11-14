@@ -9,7 +9,7 @@
 
 ## Quyết định
 
-- Dựng `apps/payment-sandbox`: một service **tách biệt** (port 4100, secret riêng) mô phỏng giao thức VNPay 2.1:
+- Dựng `payment-sandbox`: một service **tách biệt** (port 4100, secret riêng) mô phỏng giao thức VNPay 2.1:
   - API tạo URL thanh toán có `vnp_SecureHash` (HMAC-SHA512 trên query đã sắp xếp), `vnp_TxnRef` duy nhất, số tiền ×100 như VNPay.
   - Trang sandbox cho chọn: thành công / thất bại / hủy / "IPN gửi 2 lần" / "IPN trễ 30 s".
   - Sandbox gọi **IPN server-to-server** về API; chỉ IPN được đổi trạng thái payment. `returnUrl` chỉ để hiển thị.

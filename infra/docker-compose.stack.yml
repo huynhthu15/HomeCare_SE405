@@ -24,7 +24,7 @@ x-api-env: &api-env
 services:
   migrate:
     profiles: [stack]
-    build: { context: .., dockerfile: apps/api/Dockerfile, target: migrator }
+    build: { context: .., dockerfile: backend/Dockerfile, target: migrator }
     image: ${MIGRATOR_IMAGE:-homecare-api-migrator:local}
     environment:
       DATABASE_URL: postgresql://homecare:${POSTGRES_PASSWORD:-homecare}@postgres:5432/homecare?schema=public
@@ -34,7 +34,7 @@ services:
 
   api:
     profiles: [stack]
-    build: { context: .., dockerfile: apps/api/Dockerfile, target: runtime }
+    build: { context: .., dockerfile: backend/Dockerfile, target: runtime }
     image: ${API_IMAGE:-homecare-api:local}
     environment:
       <<: *api-env
@@ -52,7 +52,7 @@ services:
   worker:
     profiles: [stack]
     # Same image as `api` (build is cached), different process role
-    build: { context: .., dockerfile: apps/api/Dockerfile, target: runtime }
+    build: { context: .., dockerfile: backend/Dockerfile, target: runtime }
     image: ${API_IMAGE:-homecare-api:local}
     command: ['node', 'dist/worker.js']
     environment:

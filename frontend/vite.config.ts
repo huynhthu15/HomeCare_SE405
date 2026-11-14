@@ -11,7 +11,7 @@ export default defineConfig({
     alias: {
       // Compile the shared contracts from source -> instant HMR when a schema changes
       '@homecare/shared': fileURLToPath(
-        new URL('../../packages/shared/src/index.ts', import.meta.url),
+        new URL('../packages/shared/src/index.ts', import.meta.url),
       ),
     },
   },

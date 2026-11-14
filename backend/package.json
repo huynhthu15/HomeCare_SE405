@@ -1,5 +1,5 @@
 {
-  "name": "@homecare/api",
+  "name": "@homecare/backend",
   "version": "0.1.0",
   "private": true,
   "description": "HomeCare API - NestJS modular monolith (HTTP + realtime + worker roles)",

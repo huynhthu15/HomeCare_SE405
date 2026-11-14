@@ -3,32 +3,32 @@
 # Ownership map: docs/team.md
 
 # Shared kernel: everyone reviews
-# /apps/api/src/common/      <tv1> <tv2> <tv3> <tv4>
+# /backend/src/common/      <tv1> <tv2> <tv3> <tv4>
 # /packages/shared/          <tv1> <tv2> <tv3> <tv4>
 # /infra/                    <tv1> <tv2> <tv3> <tv4>
 # /.github/                  <tv1> <tv2> <tv3> <tv4>
 
 # TV1 — identity, profile, admin console
-# /apps/api/src/modules/identity/   <tv1>
-# /apps/api/src/modules/profile/    <tv1>
-# /apps/api/prisma/schema/identity.prisma  <tv1>
-# /apps/api/prisma/schema/profile.prisma   <tv1>
+# /backend/src/modules/identity/   <tv1>
+# /backend/src/modules/profile/    <tv1>
+# /backend/prisma/schema/identity.prisma  <tv1>
+# /backend/prisma/schema/profile.prisma   <tv1>
 
 # TV2 — catalog, booking, dispatch
-# /apps/api/src/modules/catalog/    <tv2>
-# /apps/api/src/modules/booking/    <tv2>
-# /apps/api/src/modules/dispatch/   <tv2>
-# /apps/api/prisma/schema/catalog.prisma  <tv2>
-# /apps/api/prisma/schema/booking.prisma  <tv2>
+# /backend/src/modules/catalog/    <tv2>
+# /backend/src/modules/booking/    <tv2>
+# /backend/src/modules/dispatch/   <tv2>
+# /backend/prisma/schema/catalog.prisma  <tv2>
+# /backend/prisma/schema/booking.prisma  <tv2>
 
 # TV3 — payments
-# /apps/api/src/modules/payments/   <tv3>
-# /apps/payment-sandbox/            <tv3>
-# /apps/api/prisma/schema/payments.prisma <tv3>
+# /backend/src/modules/payments/   <tv3>
+# /payment-sandbox/            <tv3>
+# /backend/prisma/schema/payments.prisma <tv3>
 
 # TV4 — technician app, tracking, notifications
-# /apps/technician/                 <tv4>
-# /apps/api/src/modules/technician/ <tv4>
-# /apps/api/src/modules/tracking/   <tv4>
-# /apps/api/src/modules/notifications/ <tv4>
-# /apps/api/prisma/schema/technician.prisma <tv4>
+# /mobile/                 <tv4>
+# /backend/src/modules/technician/ <tv4>
+# /backend/src/modules/tracking/   <tv4>
+# /backend/src/modules/notifications/ <tv4>
+# /backend/prisma/schema/technician.prisma <tv4>

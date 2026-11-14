@@ -1,6 +1,6 @@
 # ADR-0004: JWT ngắn hạn + refresh token xoay vòng + thu hồi qua Redis
 
-- Trạng thái: Đã chấp nhận, đã cài đặt (`apps/api/src/modules/identity`)
+- Trạng thái: Đã chấp nhận, đã cài đặt (`backend/src/modules/identity`)
 - Ngày: 2026-11-13
 
 ## Bối cảnh

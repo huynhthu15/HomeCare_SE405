@@ -4,13 +4,13 @@
     {
       "name": "api",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@homecare/api", "dev"],
+      "runtimeArgs": ["--filter", "@homecare/backend", "dev"],
       "port": 4000
     },
     {
       "name": "web",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "@homecare/web", "dev"],
+      "runtimeArgs": ["--filter", "@homecare/frontend", "dev"],
       "port": 3020,
       "url": "http://127.0.0.1:3020"
     }

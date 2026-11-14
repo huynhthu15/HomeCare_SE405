@@ -34,12 +34,12 @@ HomeCare_SE405/
 
 **Đọc code từ đâu?** Đi theo luồng đăng nhập, đúng thứ tự một request chạy qua:
 
-1. `apps/web/src/pages/LoginPage.tsx` — form người dùng nhập
-2. `apps/web/src/lib/api-client.ts` — gửi `POST /api/v1/auth/login`
-3. `apps/api/src/modules/identity/auth.controller.ts` — backend nhận request
-4. `apps/api/src/modules/identity/auth.service.ts` — kiểm tra mật khẩu, tạo phiên
-5. `apps/api/src/modules/identity/token.service.ts` — tạo token
-6. `apps/api/prisma/schema/identity.prisma` — bảng `users`, `sessions`
+1. `frontend/src/pages/LoginPage.tsx` — form người dùng nhập
+2. `frontend/src/lib/api-client.ts` — gửi `POST /api/v1/auth/login`
+3. `backend/src/modules/identity/auth.controller.ts` — backend nhận request
+4. `backend/src/modules/identity/auth.service.ts` — kiểm tra mật khẩu, tạo phiên
+5. `backend/src/modules/identity/token.service.ts` — tạo token
+6. `backend/prisma/schema/identity.prisma` — bảng `users`, `sessions`
 
 Mọi module sau này (booking, payments…) đều viết theo đúng khung này.
 
@@ -53,7 +53,7 @@ Mọi module sau này (booking, payments…) đều viết theo đúng khung nà
 ```bash
 pnpm install
 pnpm infra:up                     # Postgres, Redis, Mailpit, MinIO
-cp .env.example apps/api/.env     # PowerShell: Copy-Item .env.example apps/api/.env
+cp .env.example backend/.env     # PowerShell: Copy-Item .env.example backend/.env
 pnpm db:migrate
 pnpm db:seed
 pnpm dev
@@ -119,4 +119,4 @@ npm i -g typescript-language-server typescript
 
 ## Code cũ
 
-Prototype JS ban đầu được giữ trong [`legacy/`](legacy). Thư mục này không còn được chạy, nhưng **giao diện trong `legacy/web/src` sẽ được dùng lại**: chuyển sang `apps/web` và nối với API mới theo [docs/frontend-migration.md](docs/frontend-migration.md). Xóa `legacy/` sau khi đã chuyển xong mọi màn hình.
+Prototype JS ban đầu được giữ trong [`legacy/`](legacy). Thư mục này không còn được chạy, nhưng **giao diện trong `legacy/web/src` sẽ được dùng lại**: chuyển sang `frontend` và nối với API mới theo [docs/frontend-migration.md](docs/frontend-migration.md). Xóa `legacy/` sau khi đã chuyển xong mọi màn hình.

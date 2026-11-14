@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-# Build from the repository root:  docker build -f apps/api/Dockerfile -t homecare-api .
+# Build from the repository root:  docker build -f backend/Dockerfile -t homecare-api .
 # One image, two process roles:  node dist/main.js (api)  |  node dist/worker.js (worker)
 
 FROM node:24-alpine AS base
@@ -13,17 +13,17 @@ FROM base AS build
 RUN apk add --no-cache python3 make g++
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json tsconfig.base.json ./
 COPY packages/shared ./packages/shared
-COPY apps/api ./apps/api
+COPY backend ./backend
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --frozen-lockfile --filter "@homecare/api..."
+    pnpm install --frozen-lockfile --filter "@homecare/backend..."
 RUN pnpm --filter @homecare/shared build \
- && pnpm --filter @homecare/api exec prisma generate \
- && pnpm --filter @homecare/api build \
- && pnpm --filter @homecare/api deploy --prod --legacy /out
+ && pnpm --filter @homecare/backend exec prisma generate \
+ && pnpm --filter @homecare/backend build \
+ && pnpm --filter @homecare/backend deploy --prod --legacy /out
 
 # ---------- migrator: has the Prisma CLI; runs `migrate deploy` (and dev seed) as a one-off job ----------
 FROM build AS migrator
-WORKDIR /repo/apps/api
+WORKDIR /repo/backend
 CMD ["pnpm", "exec", "prisma", "migrate", "deploy"]
 
 # ---------- runtime: small, non-root, production deps only ----------
@@ -33,7 +33,7 @@ WORKDIR /app
 RUN addgroup -S app && adduser -S app -G app
 COPY --from=build --chown=app:app /out/node_modules ./node_modules
 COPY --from=build --chown=app:app /out/package.json ./package.json
-COPY --from=build --chown=app:app /repo/apps/api/dist ./dist
+COPY --from=build --chown=app:app /repo/backend/dist ./dist
 USER app
 EXPOSE 4000
 HEALTHCHECK --interval=10s --timeout=3s --start-period=20s --retries=3 \

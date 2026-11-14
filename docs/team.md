@@ -1,14 +1,14 @@
 # Phân công & lộ trình — nhóm 4 người
 
 > Mỗi người sở hữu **một domain end-to-end**: schema Prisma, module API, màn hình web/mobile, test và tài liệu của domain đó.
-> Shared kernel (`apps/api/src/common`, `packages/shared`, `infra`, `.github`) thuộc **cả nhóm**: mọi PR chạm vào đây cần ≥ 2 người review.
+> Shared kernel (`backend/src/common`, `packages/shared`, `infra`, `.github`) thuộc **cả nhóm**: mọi PR chạm vào đây cần ≥ 2 người review.
 
-| Thành viên | Domain                                                                           | Thư mục chính                                                                                                    | Màn hình                                       |
-| ---------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| **TV1**    | Identity _(đã có mẫu)_, Profile, Địa chỉ, Thiết bị & Nhắc bảo trì, Admin console | `modules/identity`, `modules/profile`, `schema/identity.prisma`, `schema/profile.prisma`                         | Dashboard, Hồ sơ, Thiết bị, Admin › Người dùng |
-| **TV2**    | Catalog, Booking (state machine), Dispatch (điều phối)                           | `modules/catalog`, `modules/booking`, `modules/dispatch`, `schema/catalog.prisma`, `schema/booking.prisma`       | Vệ sinh, Sửa chữa, Đặt lịch, Admin › Điều phối |
-| **TV3**    | Payments, payment-sandbox (mock VNPay), hoàn tiền, biên nhận                     | `modules/payments`, `apps/payment-sandbox`, `schema/payments.prisma`                                             | Thanh toán, Admin › Đối soát                   |
-| **TV4**    | App KTV (Expo), Tracking realtime (Socket.IO), Notifications, simulator          | `apps/technician`, `modules/technician`, `modules/tracking`, `modules/notifications`, `schema/technician.prisma` | Theo dõi, app di động, Admin › Bản đồ realtime |
+| Thành viên | Domain                                                                           | Thư mục chính                                                                                              | Màn hình                                       |
+| ---------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| **TV1**    | Identity _(đã có mẫu)_, Profile, Địa chỉ, Thiết bị & Nhắc bảo trì, Admin console | `modules/identity`, `modules/profile`, `schema/identity.prisma`, `schema/profile.prisma`                   | Dashboard, Hồ sơ, Thiết bị, Admin › Người dùng |
+| **TV2**    | Catalog, Booking (state machine), Dispatch (điều phối)                           | `modules/catalog`, `modules/booking`, `modules/dispatch`, `schema/catalog.prisma`, `schema/booking.prisma` | Vệ sinh, Sửa chữa, Đặt lịch, Admin › Điều phối |
+| **TV3**    | Payments, payment-sandbox (mock VNPay), hoàn tiền, biên nhận                     | `modules/payments`, `payment-sandbox`, `schema/payments.prisma`                                            | Thanh toán, Admin › Đối soát                   |
+| **TV4**    | App KTV (Expo), Tracking realtime (Socket.IO), Notifications, simulator          | `mobile`, `modules/technician`, `modules/tracking`, `modules/notifications`, `schema/technician.prisma`    | Theo dõi, app di động, Admin › Bản đồ realtime |
 
 Điền GitHub username vào `.github/CODEOWNERS` để PR tự yêu cầu review đúng người.
 
@@ -20,7 +20,7 @@ Monorepo pnpm, NestJS + Prisma + Postgres + Redis, shared kernel (config, log, l
 
 ### Phase 1 — Luồng đặt dịch vụ cơ bản
 
-> **Giao diện: dùng lại bản cũ, không viết lại.** Trước khi chia việc, một người đưa toàn bộ màn hình trong `legacy/web/src` vào `apps/web` (bước 1). Sau đó mỗi người làm API để màn hình của mình có dữ liệu (bước 2). Bảng màn hình ↔ API ↔ người phụ trách và các chỗ bắt buộc sửa (token, giá tiền, thanh toán): [docs/frontend-migration.md](frontend-migration.md).
+> **Giao diện: dùng lại bản cũ, không viết lại.** Trước khi chia việc, một người đưa toàn bộ màn hình trong `legacy/web/src` vào `frontend` (bước 1). Sau đó mỗi người làm API để màn hình của mình có dữ liệu (bước 2). Bảng màn hình ↔ API ↔ người phụ trách và các chỗ bắt buộc sửa (token, giá tiền, thanh toán): [docs/frontend-migration.md](frontend-migration.md).
 
 | TV  | Việc                                                                                                                                       | Xong khi                                                                     |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |

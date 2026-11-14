@@ -7,8 +7,8 @@
 
 |                                     | Đã có                                                                                                                                                 | Chưa có                                                                 |
 | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| **Frontend mới** (`apps/web`)       | Trang đăng nhập (giao diện theo `RootShell.jsx` cũ), khung sidebar/header, dashboard tạm, admin › người dùng, trang "đang chuyển đổi" cho các phân hệ | Toàn bộ màn hình nghiệp vụ cũ                                           |
-| **Backend mới** (`apps/api`)        | `/api/v1/auth/*`, `/api/v1/admin/users`                                                                                                               | Mọi API nghiệp vụ (dashboard, dịch vụ, đặt lịch, thanh toán, thiết bị…) |
+| **Frontend mới** (`frontend`)       | Trang đăng nhập (giao diện theo `RootShell.jsx` cũ), khung sidebar/header, dashboard tạm, admin › người dùng, trang "đang chuyển đổi" cho các phân hệ | Toàn bộ màn hình nghiệp vụ cũ                                           |
+| **Backend mới** (`backend`)         | `/api/v1/auth/*`, `/api/v1/admin/users`                                                                                                               | Mọi API nghiệp vụ (dashboard, dịch vụ, đặt lịch, thanh toán, thiết bị…) |
 | **Giao diện cũ** (`legacy/web/src`) | ~6.900 dòng, 10 màn hình hoàn chỉnh                                                                                                                   | —                                                                       |
 
 Vì vậy nếu chỉ copy giao diện sang, **màn hình sẽ hiện đủ nhưng chưa có dữ liệu** cho tới khi người phụ trách làm xong API tương ứng.
@@ -21,7 +21,7 @@ Có, gần như nguyên vẹn. Hai bên dùng chung React, react-router, lucide-
 | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
 | React 18 → 19                                                                                  | Không cần sửa đáng kể                                                                      |
 | `react-router-dom` → `react-router` (cùng v7, cùng API)                                        | Đổi dòng import                                                                            |
-| Tailwind 3 → 4: `shadow-sm` (60 chỗ) → `shadow-xs`, `outline-none` (43 chỗ) → `outline-hidden` | Chạy công cụ chính thức `npx @tailwindcss/upgrade` trong `apps/web`, rồi xem lại giao diện |
+| Tailwind 3 → 4: `shadow-sm` (60 chỗ) → `shadow-xs`, `outline-none` (43 chỗ) → `outline-hidden` | Chạy công cụ chính thức `npx @tailwindcss/upgrade` trong `frontend`, rồi xem lại giao diện |
 | File `.jsx`                                                                                    | Giữ `.jsx` được; chuyển dần sang `.tsx` khi sửa tới                                        |
 
 ## 3. Bảng màn hình: cần API gì, ai làm
@@ -45,8 +45,8 @@ Màn hình nào dùng chung API của người khác (vd. Thiết bị gọi `/b
 
 **Bước 1 — Đưa toàn bộ giao diện cũ vào app mới (làm một lần, một người, trước khi chia việc)**
 
-1. Copy từng màn hình vào `apps/web/src/features/<module>/` (vd. `features/booking/BookingPage.jsx`).
-2. Nối route trong `apps/web/src/App.tsx` thay cho trang "đang chuyển đổi".
+1. Copy từng màn hình vào `frontend/src/features/<module>/` (vd. `features/booking/BookingPage.jsx`).
+2. Nối route trong `frontend/src/App.tsx` thay cho trang "đang chuyển đổi".
 3. Chạy `npx @tailwindcss/upgrade`, đổi import `react-router-dom` → `react-router`.
 4. Thay phần đăng nhập/token theo mục 5.1.
 
@@ -57,7 +57,7 @@ Kết quả: app mới trông giống bản cũ, các ô dữ liệu tạm trố
 1. Làm API backend trong module của mình (skill `nest-module`).
 2. **Ưu tiên trả về đúng tên trường mà màn hình cũ đang dùng**, để phần giao diện gần như không phải sửa. Nếu đổi tên trường thì sửa luôn màn hình trong cùng PR.
 3. Sửa lời gọi API trong màn hình theo mục 5.
-4. Đổi `ready: true` cho màn hình đó trong `apps/web/src/config/modules.ts`.
+4. Đổi `ready: true` cho màn hình đó trong `frontend/src/config/modules.ts`.
 
 ## 5. Những chỗ BẮT BUỘC sửa khi chuyển
 
@@ -80,7 +80,7 @@ import { useQuery } from '@tanstack/react-query';
 const bookings = useQuery({ queryKey: ['bookings'], queryFn: () => api<Booking[]>('/bookings') });
 ```
 
-Người đang đăng nhập lấy từ `useAuth()` (`apps/web/src/auth/auth-context.tsx`). Báo lỗi bằng `ApiError.message`; rẽ nhánh theo `ApiError.code`.
+Người đang đăng nhập lấy từ `useAuth()` (`frontend/src/auth/auth-context.tsx`). Báo lỗi bằng `ApiError.message`; rẽ nhánh theo `ApiError.code`.
 
 ### 5.2 Không gửi số tiền từ trình duyệt
 
@@ -113,9 +113,9 @@ Bản cũ gửi `POST /technician/location` mỗi 5 giây (`TechnicianApp.jsx:22
 | Bản cũ                                        | App mới                                                                                                                                                |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `domain: "Cleaning"`                          | `CLEANING` (enum trong `packages/shared`)                                                                                                              |
-| Trạng thái chữ tiếng Việt (`"Đã thanh toán"`) | Mã (`PAID`); giao diện đổi mã sang chữ tiếng Việt bằng một bảng nhãn dùng chung, đặt ở `apps/web/src/lib/labels.ts` (tạo khi chuyển màn hình đầu tiên) |
+| Trạng thái chữ tiếng Việt (`"Đã thanh toán"`) | Mã (`PAID`); giao diện đổi mã sang chữ tiếng Việt bằng một bảng nhãn dùng chung, đặt ở `frontend/src/lib/labels.ts` (tạo khi chuyển màn hình đầu tiên) |
 | ID dạng `BK-24061`                            | ID là UUID; mã hiển thị cho người dùng là trường `code`                                                                                                |
-| Dữ liệu mẫu viết cứng trong file              | Lấy từ API; dữ liệu mẫu nằm ở `apps/api/prisma/seed.ts`                                                                                                |
+| Dữ liệu mẫu viết cứng trong file              | Lấy từ API; dữ liệu mẫu nằm ở `backend/prisma/seed.ts`                                                                                                 |
 
 ## 6. Màn hình kỹ thuật viên: web hay app Expo? (cần nhóm quyết định)
 
@@ -133,5 +133,5 @@ Gợi ý: dùng bản web cho MVP, làm Expo ở phase sau nếu còn thời gia
 - [ ] Không gửi `amount`, `price`, `total`, `status`, `userId` hay tên KTV
 - [ ] Giá tiền hiển thị lấy từ server
 - [ ] Đã xử lý 3 trạng thái: đang tải, dữ liệu rỗng, lỗi API
-- [ ] Đã đổi `ready: true` trong `apps/web/src/config/modules.ts`
+- [ ] Đã đổi `ready: true` trong `frontend/src/config/modules.ts`
 - [ ] Đã thử thủ công với tài khoản seed (mật khẩu `Homecare@123`)

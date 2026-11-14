@@ -16,8 +16,8 @@ export default tseslint.config(
       '**/dist/**',
       '**/coverage/**',
       '**/node_modules/**',
-      'apps/api/src/generated/**',
-      'apps/api/prisma/migrations/**',
+      'backend/src/generated/**',
+      'backend/prisma/migrations/**',
     ],
   },
   js.configs.recommended,
@@ -35,12 +35,12 @@ export default tseslint.config(
 
   // ---------- API (NestJS) ----------
   {
-    files: ['apps/api/**/*.ts'],
+    files: ['backend/**/*.ts'],
     languageOptions: { globals: { ...globals.node, ...globals.jest } },
   },
   // Module boundaries: files at a module root (modules/<name>/*.ts)
   {
-    files: ['apps/api/src/modules/*/*.ts'],
+    files: ['backend/src/modules/*/*.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -50,7 +50,7 @@ export default tseslint.config(
   },
   // Files one level deeper (modules/<name>/<dir>/*.ts)
   {
-    files: ['apps/api/src/modules/*/*/*.ts'],
+    files: ['backend/src/modules/*/*/*.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -60,7 +60,7 @@ export default tseslint.config(
   },
   // Shared kernel must never depend on business modules
   {
-    files: ['apps/api/src/common/**/*.ts', 'apps/api/src/infra/**/*.ts'],
+    files: ['backend/src/common/**/*.ts', 'backend/src/infra/**/*.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -79,7 +79,7 @@ export default tseslint.config(
 
   // ---------- Web (React) ----------
   {
-    files: ['apps/web/**/*.{ts,tsx}'],
+    files: ['frontend/**/*.{ts,tsx}'],
     languageOptions: { globals: { ...globals.browser } },
     plugins: { 'react-hooks': reactHooks },
     rules: {

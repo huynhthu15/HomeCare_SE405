@@ -10,7 +10,7 @@
 - [ ] catalog / booking / dispatch (TV2)
 - [ ] payments (TV3)
 - [ ] technician / tracking / notifications (TV4)
-- [ ] shared kernel (`apps/api/src/common`, `packages/shared`, `infra/`) — cần cả nhóm review
+- [ ] shared kernel (`backend/src/common`, `packages/shared`, `infra/`) — cần cả nhóm review
 
 ## Checklist (Definition of Done)
 

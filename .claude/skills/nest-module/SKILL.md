@@ -1,16 +1,16 @@
 ---
 name: nest-module
-description: How to add or extend a business module in the HomeCare NestJS modular monolith (apps/api/src/modules). Use when creating a module such as booking, payments, tracking, adding endpoints/services/events to one, or wiring cross-module calls. Encodes folder layout, public index.ts, guards, validation, transactions, outbox, audit and test conventions. The identity module is the reference implementation.
+description: How to add or extend a business module in the HomeCare NestJS modular monolith (backend/src/modules). Use when creating a module such as booking, payments, tracking, adding endpoints/services/events to one, or wiring cross-module calls. Encodes folder layout, public index.ts, guards, validation, transactions, outbox, audit and test conventions. The identity module is the reference implementation.
 ---
 
 # Adding a NestJS module the HomeCare way
 
-Reference implementation: `apps/api/src/modules/identity/` — copy its shape.
+Reference implementation: `backend/src/modules/identity/` — copy its shape.
 
 ## Layout
 
 ```
-apps/api/src/modules/<name>/
+backend/src/modules/<name>/
   index.ts                 # PUBLIC API — the only file other modules may import
   <name>.module.ts
   <name>.controller.ts     # thin: parse input, call service, return DTO
@@ -18,12 +18,12 @@ apps/api/src/modules/<name>/
   <name>.state.ts          # (if the module has a lifecycle) transition table, pure + unit-tested
   dto/<name>.dto.ts        # createZodDto(schemaFromShared)
   <name>.service.spec.ts   # unit tests next to the code
-apps/api/prisma/schema/<name>.prisma   # owned by the module owner
-apps/api/test/<name>.e2e-spec.ts       # real Postgres + Redis
+backend/prisma/schema/<name>.prisma   # owned by the module owner
+backend/test/<name>.e2e-spec.ts       # real Postgres + Redis
 packages/shared/src/<name>.ts          # zod schemas + types the clients also use
 ```
 
-Then add the module to `imports` in `apps/api/src/app.module.ts` (and to `worker.module.ts` if it has event handlers or jobs).
+Then add the module to `imports` in `backend/src/app.module.ts` (and to `worker.module.ts` if it has event handlers or jobs).
 
 ## Rules (lint-enforced where possible)
 
@@ -63,8 +63,8 @@ Then add the module to `imports` in `apps/api/src/app.module.ts` (and to `worker
 ## Tests you must write
 
 - Unit: pure logic (state table, price calculation, ETA).
-- E2E: happy path **and** the refusals — 401 without token, 403 wrong role, 404 for someone else's resource (IDOR), 400 for unknown fields, 409 for duplicate/conflicting state. See `apps/api/test/auth.e2e-spec.ts`.
+- E2E: happy path **and** the refusals — 401 without token, 403 wrong role, 404 for someone else's resource (IDOR), 400 for unknown fields, 409 for duplicate/conflicting state. See `backend/test/auth.e2e-spec.ts`.
 
 ## Migrations
 
-`pnpm db:migrate --name <change>` creates a migration from the schema. For things Prisma can't express (exclusion constraints, partial indexes) use `pnpm --filter @homecare/api exec prisma migrate dev --create-only` and edit the SQL. Migrations must be backward compatible with the currently deployed code (expand → migrate → contract). Never edit a migration that is already on `main`.
+`pnpm db:migrate --name <change>` creates a migration from the schema. For things Prisma can't express (exclusion constraints, partial indexes) use `pnpm --filter @homecare/backend exec prisma migrate dev --create-only` and edit the SQL. Migrations must be backward compatible with the currently deployed code (expand → migrate → contract). Never edit a migration that is already on `main`.
