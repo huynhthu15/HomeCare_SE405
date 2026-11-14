@@ -1,14 +1,14 @@
 # Phân công & lộ trình — nhóm 4 người
 
 > Mỗi người sở hữu **một domain end-to-end**: schema Prisma, module API, màn hình web/mobile, test và tài liệu của domain đó.
-> Shared kernel (`apps/api/src/common`, `packages/shared`, `infra`, `.github`) thuộc **cả nhóm**: mọi PR chạm vào đây cần ≥ 2 người review.
+> Shared kernel (`backend/src/common`, `packages/shared`, `infra`, `.github`) thuộc **cả nhóm**: mọi PR chạm vào đây cần ≥ 2 người review.
 
-| Thành viên | Domain                                                                           | Thư mục chính                                                                                                    | Màn hình                                       |
-| ---------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| **TV1**    | Identity _(đã có mẫu)_, Profile, Địa chỉ, Thiết bị & Nhắc bảo trì, Admin console | `modules/identity`, `modules/profile`, `schema/identity.prisma`, `schema/profile.prisma`                         | Dashboard, Hồ sơ, Thiết bị, Admin › Người dùng |
-| **TV2**    | Catalog, Booking (state machine), Dispatch (điều phối)                           | `modules/catalog`, `modules/booking`, `modules/dispatch`, `schema/catalog.prisma`, `schema/booking.prisma`       | Vệ sinh, Sửa chữa, Đặt lịch, Admin › Điều phối |
-| **TV3**    | Payments, payment-sandbox (mock VNPay), hoàn tiền, biên nhận                     | `modules/payments`, `apps/payment-sandbox`, `schema/payments.prisma`                                             | Thanh toán, Admin › Đối soát                   |
-| **TV4**    | App KTV (Expo), Tracking realtime (Socket.IO), Notifications, simulator          | `apps/technician`, `modules/technician`, `modules/tracking`, `modules/notifications`, `schema/technician.prisma` | Theo dõi, app di động, Admin › Bản đồ realtime |
+| Thành viên | Domain                                                                           | Thư mục chính                                                                                              | Màn hình                                       |
+| ---------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| **TV1**    | Identity _(đã có mẫu)_, Profile, Địa chỉ, Thiết bị & Nhắc bảo trì, Admin console | `modules/identity`, `modules/profile`, `schema/identity.prisma`, `schema/profile.prisma`                   | Dashboard, Hồ sơ, Thiết bị, Admin › Người dùng |
+| **TV2**    | Catalog, Booking (state machine), Dispatch (điều phối)                           | `modules/catalog`, `modules/booking`, `modules/dispatch`, `schema/catalog.prisma`, `schema/booking.prisma` | Vệ sinh, Sửa chữa, Đặt lịch, Admin › Điều phối |
+| **TV3**    | Payments, payment-sandbox (mock VNPay), hoàn tiền, biên nhận                     | `modules/payments`, `payment-sandbox`, `schema/payments.prisma`                                            | Thanh toán, Admin › Đối soát                   |
+| **TV4**    | App KTV (Expo), Tracking realtime (Socket.IO), Notifications, simulator          | `mobile`, `modules/technician`, `modules/tracking`, `modules/notifications`, `schema/technician.prisma`    | Theo dõi, app di động, Admin › Bản đồ realtime |
 
 Điền GitHub username vào `.github/CODEOWNERS` để PR tự yêu cầu review đúng người.
 
@@ -20,12 +20,14 @@ Monorepo pnpm, NestJS + Prisma + Postgres + Redis, shared kernel (config, log, l
 
 ### Phase 1 — Luồng đặt dịch vụ cơ bản
 
-| TV  | Việc                                                                                                                                   | Xong khi                                                                     |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| TV1 | `profile`: CRUD địa chỉ (có lat/lng), thiết bị, nhắc bảo trì; `GET /me/dashboard`                                                      | Port xong Dashboard/Thiết bị/Hồ sơ từ `legacy/`; e2e có test IDOR            |
-| TV2 | `catalog` (dịch vụ, add-on, voucher, **báo giá phía server**), `booking` (tạo, hủy, state machine + history + outbox, Idempotency-Key) | Đặt được booking từ web, không thể sửa giá; unit test bảng chuyển trạng thái |
-| TV3 | `payment-sandbox` + `payments` (tạo URL ký HMAC, IPN idempotent, hết hạn 15')                                                          | Demo: thành công / thất bại / hủy / IPN lặp 2 lần                            |
-| TV4 | Khung app Expo: đăng nhập bằng mã KTV (refresh token trong SecureStore), danh sách job                                                 | Đăng nhập được trên điện thoại thật                                          |
+> **Giao diện: dùng lại bản cũ, không viết lại.** Toàn bộ màn hình cũ đã được chuyển vào `frontend/src/features` (bước 1 ✅). Việc của mỗi người là làm API để màn hình của mình có dữ liệu và xử lý các `TODO` trong màn hình đó (bước 2). Bảng màn hình ↔ API ↔ người phụ trách và các chỗ bắt buộc sửa (token, giá tiền, thanh toán): [docs/frontend-migration.md](frontend-migration.md).
+
+| TV  | Việc                                                                                                                                       | Xong khi                                                                     |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| TV1 | `profile`: CRUD địa chỉ (có lat/lng), thiết bị, nhắc bảo trì; `GET /me/dashboard`                                                          | Port xong Dashboard/Thiết bị/Hồ sơ từ `legacy/`; e2e có test IDOR            |
+| TV2 | `catalog` (dịch vụ, add-on, voucher, **báo giá phía server**), `booking` (tạo, hủy, state machine + history + outbox, Idempotency-Key)     | Đặt được booking từ web, không thể sửa giá; unit test bảng chuyển trạng thái |
+| TV3 | `payment-sandbox` + `payments` (tạo URL ký HMAC, IPN idempotent, hết hạn 15')                                                              | Demo: thành công / thất bại / hủy / IPN lặp 2 lần                            |
+| TV4 | Màn hình KTV: **chốt web (dùng lại `TechnicianApp.jsx`) hay Expo** (xem frontend-migration.md mục 6); đăng nhập bằng mã KTV, danh sách job | Đăng nhập được và xem job trên điện thoại thật                               |
 
 ### Phase 2 — Realtime & điều phối
 

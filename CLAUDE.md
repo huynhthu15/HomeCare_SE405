@@ -7,24 +7,24 @@ Customers use the web app, technicians the Expo mobile app, admins the web opera
 
 pnpm monorepo (Node ≥ 22, pnpm 10 via corepack):
 
-| Path                              | What                                                                                                            |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `apps/api`                        | NestJS 11 modular monolith. Roles: `api` (HTTP/WS, behind Nginx) and `worker` (outbox relay, jobs) — same image |
-| `apps/api/prisma/schema/*.prisma` | Prisma 7 schema, **one file per module** (owner in header)                                                      |
-| `apps/web`                        | React 19 + Vite + Tailwind 4 + TanStack Query + react-router 7                                                  |
-| `apps/technician`                 | Expo app (to be created by TV4)                                                                                 |
-| `apps/payment-sandbox`            | Mock VNPay gateway (to be created by TV3, see ADR-0003)                                                         |
-| `packages/shared`                 | zod schemas, enums, error codes, socket events — the contract between server and clients                        |
-| `infra/`                          | docker compose (dev deps; full LB stack), Nginx, Prometheus/Grafana                                             |
-| `docs/`                           | `architecture/system-design.md`, `adr/`, `specs/`, `team.md`                                                    |
-| `legacy/`                         | Old JS prototype — **read-only reference** for porting screens. Never import from it.                           |
+| Path                             | What                                                                                                                                                                                                |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `backend`                        | NestJS 11 modular monolith. Roles: `api` (HTTP/WS, behind Nginx) and `worker` (outbox relay, jobs) — same image                                                                                     |
+| `backend/prisma/schema/*.prisma` | Prisma 7 schema, **one file per module** (owner in header)                                                                                                                                          |
+| `frontend`                       | React 19 + Vite + Tailwind 4 + TanStack Query + react-router 7                                                                                                                                      |
+| `mobile`                         | Expo app (to be created by TV4)                                                                                                                                                                     |
+| `payment-sandbox`                | Mock VNPay gateway (to be created by TV3, see ADR-0003)                                                                                                                                             |
+| `packages/shared`                | zod schemas, enums, error codes, socket events — the contract between server and clients                                                                                                            |
+| `infra/`                         | docker compose (dev deps; full LB stack), Nginx, Prometheus/Grafana                                                                                                                                 |
+| `docs/`                          | `architecture/system-design.md`, `adr/`, `specs/`, `team.md`                                                                                                                                        |
+| `legacy/`                        | Old JS prototype. Its UI is **reused**: copy screens into `frontend` and rewire them per `docs/frontend-migration.md` (no localStorage tokens, no client-sent prices/status). Never import from it. |
 
 ## Commands
 
 ```bash
 pnpm install                 # also builds packages/shared
 pnpm infra:up                # Postgres, Redis, Mailpit, MinIO (Docker)
-cp .env.example apps/api/.env
+cp .env.example backend/.env
 pnpm db:migrate              # apply/create migrations (dev)
 pnpm db:seed                 # sample data; password for every seed account: Homecare@123
 pnpm dev                     # api :4000 (Swagger /api/docs) + web :3020 (proxies /api)
@@ -35,7 +35,7 @@ pnpm obs:up                  # + Prometheus :9090, Grafana :3001
 
 ## Architecture rules (do not break these)
 
-1. **Module boundaries.** Business code lives in `apps/api/src/modules/<module>/`. Other modules import it **only via its `index.ts`**; `common/` + `infra/` (shared kernel) never import modules. ESLint enforces this. Never query another module's tables — call its service or consume its events.
+1. **Module boundaries.** Business code lives in `backend/src/modules/<module>/`. Other modules import it **only via its `index.ts`**; `common/` + `infra/` (shared kernel) never import modules. ESLint enforces this. Never query another module's tables — call its service or consume its events.
 2. **Server is the source of truth.** Clients send ids, never prices/amounts/status/owner ids. Prices are computed from catalog rows; status changes go through the module's state table (`<module>.state.ts`).
 3. **Auth by default.** Global guards: Throttler → JwtAuthGuard → RolesGuard. Use `@Public()` only deliberately, `@Roles(...)` for privileged routes, `@CurrentUser()` for the caller. Every query on user-owned data filters by owner (IDOR).
 4. **Validation.** zod schemas (`.strict()`) in `packages/shared`, used via `createZodDto`. Errors: throw `AppException` with an `ErrorCode`; clients branch on `code`.
@@ -44,7 +44,7 @@ pnpm obs:up                  # + Prometheus :9090, Grafana :3001
 7. **Migrations** are backward compatible (expand → migrate → contract); never edit a merged migration.
 8. **Secrets** never in code, logs or commits. `.env` is git-ignored; production refuses dev secrets.
 
-Reference implementation for all of the above: `apps/api/src/modules/identity` + `apps/api/test/auth.e2e-spec.ts`.
+Reference implementation for all of the above: `backend/src/modules/identity` + `backend/test/auth.e2e-spec.ts`.
 
 ## Conventions
 
@@ -52,7 +52,7 @@ Reference implementation for all of the above: `apps/api/src/modules/identity` +
 - Branches: start from `dev`, name `feat/<module>-<topic>` / `fix/...` / `chore/...`, open the PR **into `dev`** (staging). Only a release PR `dev → main` or `hotfix/*` may target `main` (CI job "Branch policy" enforces it). See ADR-0007.
 - Conventional Commits; PR template checklist must be satisfied. No AI co-author trailers in commits.
 - Money = `Int` VND. Ids = UUID v7. Times = `timestamptz`.
-- Web: access token in memory only (`apps/web/src/lib/api-client.ts`); never localStorage.
+- Web: access token in memory only (`frontend/src/lib/api-client.ts`); never localStorage.
 
 ## Team ownership (details: docs/team.md)
 

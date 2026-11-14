@@ -90,10 +90,10 @@ jobs:
       matrix:
         include:
           - name: api
-            dockerfile: apps/api/Dockerfile
+            dockerfile: backend/Dockerfile
             target: runtime
           - name: api-migrator
-            dockerfile: apps/api/Dockerfile
+            dockerfile: backend/Dockerfile
             target: migrator
           - name: edge
             dockerfile: infra/nginx/Dockerfile

@@ -9,5 +9,5 @@
 .claude
 legacy
 docs
-apps/api/src/generated
+backend/src/generated
 **/*.log

@@ -145,10 +145,10 @@ Mũi tên liền = gọi đồng bộ qua service đã export. Mũi tên đứt 
 
 ### Module boundaries
 
-1. Mỗi module nằm trong `apps/api/src/modules/<tên>/` và chỉ công bố API qua `index.ts`.
+1. Mỗi module nằm trong `backend/src/modules/<tên>/` và chỉ công bố API qua `index.ts`.
 2. Module khác **chỉ import từ `index.ts`** — ESLint (`no-restricted-imports`) chặn import sâu.
 3. `common/` và `infra/` là shared kernel, **không** được import module nghiệp vụ (ESLint chặn).
-4. Mỗi module sở hữu file schema của mình trong `apps/api/prisma/schema/<module>.prisma`; **không truy vấn bảng của module khác** — gọi service của module đó.
+4. Mỗi module sở hữu file schema của mình trong `backend/prisma/schema/<module>.prisma`; **không truy vấn bảng của module khác** — gọi service của module đó.
 5. Phụ thuộc giữa module phải là đồ thị không vòng; cần đảo chiều thì dùng event.
 
 ## 4. Dữ liệu

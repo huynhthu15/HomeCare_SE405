@@ -17,6 +17,6 @@ updates:
     target-branch: dev
     schedule: { interval: weekly }
   - package-ecosystem: docker
-    directories: [/apps/api, /infra/nginx]
+    directories: [/backend, /infra/nginx]
     target-branch: dev
     schedule: { interval: weekly }

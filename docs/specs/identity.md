@@ -38,4 +38,4 @@ Một cơ chế xác thực dùng chung cho web, app di động và mọi replic
 ## 8. Kiểm thử
 
 - Unit: `password.service.spec.ts`, `token.service.spec.ts`, `roles.guard.spec.ts`, `env.schema.spec.ts`.
-- E2E: `apps/api/test/auth.e2e-spec.ts` — 12 kịch bản gồm reuse detection, logout tức thì, khóa tài khoản, RBAC, mass assignment.
+- E2E: `backend/test/auth.e2e-spec.ts` — 12 kịch bản gồm reuse detection, logout tức thì, khóa tài khoản, RBAC, mass assignment.

@@ -1,6 +1,6 @@
 /**
  * Socket.IO contract (owner: TV4 — tracking/notifications).
- * Server: apps/api/src/modules/tracking. Namespace: /realtime.
+ * Server: backend/src/modules/tracking. Namespace: /realtime.
  * Auth: client sends the access JWT in `auth.token` during the handshake.
  *
  * Rooms joined by the server (clients can never join rooms themselves):

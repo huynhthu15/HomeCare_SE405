@@ -1,6 +1,6 @@
 /**
  * Domain enums shared by every client. Values mirror the Prisma enums in
- * apps/api/prisma/schema.prisma — change both together.
+ * backend/prisma/schema.prisma — change both together.
  */
 
 export const UserRole = {
@@ -18,7 +18,7 @@ export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus];
 
 /**
  * Booking lifecycle. Transitions are enforced server-side only
- * (apps/api/src/modules/booking/booking.state.ts — owner: TV2).
+ * (backend/src/modules/booking/booking.state.ts — owner: TV2).
  *
  * PENDING_PAYMENT -> PAID -> ASSIGNED -> EN_ROUTE -> IN_PROGRESS -> COMPLETED
  * CONFIRMED_CASH  ---------^ (cash is collected on completion)

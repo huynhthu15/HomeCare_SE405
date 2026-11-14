@@ -1,3 +1,6 @@
+# Each app lives at the repository root so backend and frontend are obvious at a glance.
+# Add new apps here when they are created (payment-sandbox/ by TV3, mobile/ by TV4).
 packages:
-  - apps/*
+  - backend
+  - frontend
   - packages/*

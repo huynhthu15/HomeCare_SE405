@@ -1,6 +1,6 @@
 # ADR-0006: Transactional outbox cho domain event
 
-- Trạng thái: Đã chấp nhận. Relay đã cài đặt (`apps/api/src/common/outbox`).
+- Trạng thái: Đã chấp nhận. Relay đã cài đặt (`backend/src/common/outbox`).
 - Ngày: 2026-11-13
 
 ## Bối cảnh
