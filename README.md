@@ -9,20 +9,21 @@ Chi tiết: [docs/architecture/system-design.md](docs/architecture/system-design
 
 ```
 HomeCare_SE405/
-├─ apps/
-│  ├─ api/              ← BACKEND (NestJS)
-│  │  ├─ src/main.ts            điểm khởi động server
-│  │  ├─ src/app.module.ts      nơi ghép các module
-│  │  ├─ src/modules/<module>/  code nghiệp vụ, mỗi module một thư mục (hiện có: identity)
-│  │  ├─ src/common/            phần dùng chung: cấu hình, log, xử lý lỗi, health, audit, outbox
-│  │  ├─ prisma/schema/         thiết kế database, mỗi module một file
-│  │  └─ test/                  test e2e
-│  └─ web/              ← FRONTEND (React)
-│     └─ src/
-│        ├─ main.tsx, App.tsx   khởi động + định tuyến trang
-│        ├─ pages/              các trang
-│        ├─ layouts/            khung giao diện (sidebar, header)
-│        └─ lib/api-client.ts   chỗ frontend gọi backend
+├─ backend/            ← BACKEND (NestJS)
+│  ├─ src/main.ts              điểm khởi động server
+│  ├─ src/app.module.ts        nơi ghép các module
+│  ├─ src/modules/<module>/    code nghiệp vụ, mỗi module một thư mục (hiện có: identity)
+│  ├─ src/common/              phần dùng chung: cấu hình, log, xử lý lỗi, health, audit, outbox
+│  ├─ prisma/schema/           thiết kế database, mỗi module một file
+│  └─ test/                    test e2e
+├─ frontend/           ← FRONTEND (React)
+│  └─ src/
+│     ├─ main.tsx, App.tsx     khởi động + định tuyến trang
+│     ├─ features/<màn hình>/  các màn hình nghiệp vụ (chuyển từ giao diện cũ)
+│     ├─ layouts/              khung giao diện (sidebar, header, chuông thông báo)
+│     ├─ pages/                đăng nhập, admin, 404
+│     ├─ config/modules.ts     màn hình nào đã có API, ai phụ trách
+│     └─ lib/api-client.ts     chỗ frontend gọi backend
 ├─ packages/shared/     ← quy ước dữ liệu chung BE–FE (schema form, mã lỗi, enum)
 ├─ infra/               ← Docker: database, Redis, Nginx load balancer, Grafana
 ├─ tests/load/          ← script đo tải (k6)
