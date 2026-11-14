@@ -20,12 +20,14 @@ Monorepo pnpm, NestJS + Prisma + Postgres + Redis, shared kernel (config, log, l
 
 ### Phase 1 — Luồng đặt dịch vụ cơ bản
 
-| TV  | Việc                                                                                                                                   | Xong khi                                                                     |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| TV1 | `profile`: CRUD địa chỉ (có lat/lng), thiết bị, nhắc bảo trì; `GET /me/dashboard`                                                      | Port xong Dashboard/Thiết bị/Hồ sơ từ `legacy/`; e2e có test IDOR            |
-| TV2 | `catalog` (dịch vụ, add-on, voucher, **báo giá phía server**), `booking` (tạo, hủy, state machine + history + outbox, Idempotency-Key) | Đặt được booking từ web, không thể sửa giá; unit test bảng chuyển trạng thái |
-| TV3 | `payment-sandbox` + `payments` (tạo URL ký HMAC, IPN idempotent, hết hạn 15')                                                          | Demo: thành công / thất bại / hủy / IPN lặp 2 lần                            |
-| TV4 | Khung app Expo: đăng nhập bằng mã KTV (refresh token trong SecureStore), danh sách job                                                 | Đăng nhập được trên điện thoại thật                                          |
+> **Giao diện: dùng lại bản cũ, không viết lại.** Trước khi chia việc, một người đưa toàn bộ màn hình trong `legacy/web/src` vào `apps/web` (bước 1). Sau đó mỗi người làm API để màn hình của mình có dữ liệu (bước 2). Bảng màn hình ↔ API ↔ người phụ trách và các chỗ bắt buộc sửa (token, giá tiền, thanh toán): [docs/frontend-migration.md](frontend-migration.md).
+
+| TV  | Việc                                                                                                                                       | Xong khi                                                                     |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| TV1 | `profile`: CRUD địa chỉ (có lat/lng), thiết bị, nhắc bảo trì; `GET /me/dashboard`                                                          | Port xong Dashboard/Thiết bị/Hồ sơ từ `legacy/`; e2e có test IDOR            |
+| TV2 | `catalog` (dịch vụ, add-on, voucher, **báo giá phía server**), `booking` (tạo, hủy, state machine + history + outbox, Idempotency-Key)     | Đặt được booking từ web, không thể sửa giá; unit test bảng chuyển trạng thái |
+| TV3 | `payment-sandbox` + `payments` (tạo URL ký HMAC, IPN idempotent, hết hạn 15')                                                              | Demo: thành công / thất bại / hủy / IPN lặp 2 lần                            |
+| TV4 | Màn hình KTV: **chốt web (dùng lại `TechnicianApp.jsx`) hay Expo** (xem frontend-migration.md mục 6); đăng nhập bằng mã KTV, danh sách job | Đăng nhập được và xem job trên điện thoại thật                               |
 
 ### Phase 2 — Realtime & điều phối
 

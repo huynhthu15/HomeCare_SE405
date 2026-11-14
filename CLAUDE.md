@@ -7,17 +7,17 @@ Customers use the web app, technicians the Expo mobile app, admins the web opera
 
 pnpm monorepo (Node ≥ 22, pnpm 10 via corepack):
 
-| Path                              | What                                                                                                            |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `apps/api`                        | NestJS 11 modular monolith. Roles: `api` (HTTP/WS, behind Nginx) and `worker` (outbox relay, jobs) — same image |
-| `apps/api/prisma/schema/*.prisma` | Prisma 7 schema, **one file per module** (owner in header)                                                      |
-| `apps/web`                        | React 19 + Vite + Tailwind 4 + TanStack Query + react-router 7                                                  |
-| `apps/technician`                 | Expo app (to be created by TV4)                                                                                 |
-| `apps/payment-sandbox`            | Mock VNPay gateway (to be created by TV3, see ADR-0003)                                                         |
-| `packages/shared`                 | zod schemas, enums, error codes, socket events — the contract between server and clients                        |
-| `infra/`                          | docker compose (dev deps; full LB stack), Nginx, Prometheus/Grafana                                             |
-| `docs/`                           | `architecture/system-design.md`, `adr/`, `specs/`, `team.md`                                                    |
-| `legacy/`                         | Old JS prototype — **read-only reference** for porting screens. Never import from it.                           |
+| Path                              | What                                                                                                                                                                                                |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/api`                        | NestJS 11 modular monolith. Roles: `api` (HTTP/WS, behind Nginx) and `worker` (outbox relay, jobs) — same image                                                                                     |
+| `apps/api/prisma/schema/*.prisma` | Prisma 7 schema, **one file per module** (owner in header)                                                                                                                                          |
+| `apps/web`                        | React 19 + Vite + Tailwind 4 + TanStack Query + react-router 7                                                                                                                                      |
+| `apps/technician`                 | Expo app (to be created by TV4)                                                                                                                                                                     |
+| `apps/payment-sandbox`            | Mock VNPay gateway (to be created by TV3, see ADR-0003)                                                                                                                                             |
+| `packages/shared`                 | zod schemas, enums, error codes, socket events — the contract between server and clients                                                                                                            |
+| `infra/`                          | docker compose (dev deps; full LB stack), Nginx, Prometheus/Grafana                                                                                                                                 |
+| `docs/`                           | `architecture/system-design.md`, `adr/`, `specs/`, `team.md`                                                                                                                                        |
+| `legacy/`                         | Old JS prototype. Its UI is **reused**: copy screens into `apps/web` and rewire them per `docs/frontend-migration.md` (no localStorage tokens, no client-sent prices/status). Never import from it. |
 
 ## Commands
 
