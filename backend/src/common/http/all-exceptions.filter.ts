@@ -24,6 +24,23 @@ const statusToCode: Record<number, ErrorCode> = {
 };
 
 /**
+ * Framework-raised errors (unknown route, malformed JSON, ParseUUIDPipe…) carry English text that
+ * can reveal internals ("Cannot GET /api/v1/…"). Clients get a Vietnamese message per status instead;
+ * business code throws AppException with its own message.
+ */
+const statusToMessage: Record<number, string> = {
+  400: 'Dữ liệu không hợp lệ',
+  401: 'Vui lòng đăng nhập lại',
+  403: 'Bạn không có quyền thực hiện thao tác này',
+  404: 'Không tìm thấy dữ liệu yêu cầu',
+  405: 'Thao tác không được hỗ trợ',
+  409: 'Dữ liệu bị xung đột, vui lòng tải lại',
+  413: 'Dữ liệu gửi lên quá lớn',
+  415: 'Định dạng dữ liệu không được hỗ trợ',
+  429: 'Bạn thao tác quá nhanh, vui lòng thử lại sau',
+};
+
+/**
  * Turns every error into the shared `ApiErrorBody` shape. Internal details (stack traces,
  * SQL errors) are logged with the request id but never sent to the client.
  */
@@ -93,11 +110,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
-      const response = exception.getResponse();
       const message =
-        typeof response === 'string'
-          ? response
-          : String((response as { message?: unknown }).message ?? exception.message);
+        statusToMessage[status] ??
+        (status >= 500 ? 'Hệ thống đang gặp sự cố, vui lòng thử lại' : 'Yêu cầu không hợp lệ');
       return { statusCode: status, code: statusToCode[status] ?? 'INTERNAL', message };
     }
 

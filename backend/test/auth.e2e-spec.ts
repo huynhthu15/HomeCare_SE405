@@ -77,6 +77,20 @@ describe('Identity (e2e)', () => {
     await request(http).get(`${API}/auth/me`).set('Authorization', 'Bearer not-a-jwt').expect(401);
   });
 
+  it('never leaks framework error text such as the requested route', async () => {
+    const unknown = await request(http).get(`${API}/does-not-exist`).expect(404);
+    expect(unknown.body).toMatchObject({ statusCode: 404, code: 'NOT_FOUND' });
+    expect(unknown.body.message).not.toMatch(/Cannot GET|does-not-exist/);
+
+    const badJson = await request(http)
+      .post(`${API}/auth/login`)
+      .set('Content-Type', 'application/json')
+      .send('{"identifier":')
+      .expect(400);
+    expect(badJson.body.code).toBe('VALIDATION_FAILED');
+    expect(badJson.body.message).not.toMatch(/JSON|Unexpected/);
+  });
+
   it('registers a customer and returns a working access token', async () => {
     const body = await registerMobile();
     expect(body.user.role).toBe('CUSTOMER');
