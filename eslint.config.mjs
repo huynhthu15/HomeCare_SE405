@@ -79,13 +79,18 @@ export default tseslint.config(
 
   // ---------- Web (React) ----------
   {
-    files: ['frontend/**/*.{ts,tsx}'],
+    files: ['frontend/**/*.{ts,tsx,jsx}'],
     languageOptions: { globals: { ...globals.browser } },
     plugins: { 'react-hooks': reactHooks },
     rules: {
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
     },
+  },
+  // Config files are Node scripts, even inside frontend/
+  {
+    files: ['frontend/*.{js,mjs,cjs,ts}'],
+    languageOptions: { globals: { ...globals.node } },
   },
 
   // ---------- Config files ----------

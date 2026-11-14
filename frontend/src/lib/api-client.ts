@@ -118,6 +118,26 @@ export async function api<T>(path: string, options: RequestOptions = {}): Promis
   return (await res.json()) as T;
 }
 
+/**
+ * `fetch`-compatible variant for screens ported from legacy/ that still read `Response` objects
+ * (`res.ok`, `res.json()`). Same guarantees as `api()`: `/api/v1` prefix, in-memory access token,
+ * one refresh-and-retry on 401. New code should prefer `api()` (typed, throws ApiError).
+ */
+export async function apiFetch(path: string, init: RequestInit = {}): Promise<Response> {
+  const run = () => {
+    const headers = new Headers(init.headers);
+    if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
+    return fetch(`${BASE}${path}`, { ...init, headers, credentials: 'same-origin' });
+  };
+
+  let res = await run();
+  if (res.status === 401) {
+    const refreshed = await refreshSession();
+    if (refreshed) res = await run();
+  }
+  return res;
+}
+
 function send(
   path: string,
   { method = 'GET', body, query, headers }: RequestOptions,

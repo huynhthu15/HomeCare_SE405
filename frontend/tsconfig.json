@@ -6,6 +6,10 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
+    // Screens ported from legacy/ stay .jsx until their owner converts them; they are bundled but
+    // not type-checked. New files are written in TypeScript.
+    "allowJs": true,
+    "checkJs": false,
     "noEmit": true,
     "allowImportingTsExtensions": false,
     "types": ["vite/client"],
