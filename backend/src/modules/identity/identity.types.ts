@@ -24,7 +24,8 @@ export const REFRESH_COOKIE_PATH = '/api/v1/auth';
 export const redisKeys = {
   /** Present while a revoked session's access tokens may still be unexpired */
   revokedSession: (sid: string) => `auth:revoked-sid:${sid}`,
-  loginFailures: (identifier: string) => `auth:login-fail:${identifier.toLowerCase()}`,
+  /** Pass the output of normalizeLoginIdentifier() — the same value used to look the account up */
+  loginFailures: (normalizedIdentifier: string) => `auth:login-fail:${normalizedIdentifier}`,
 };
 
 export const LOGIN_MAX_FAILURES = 5;

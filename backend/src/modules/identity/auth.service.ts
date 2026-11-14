@@ -96,7 +96,10 @@ export class AuthService {
   }
 
   async login(input: LoginInput, meta: RequestMeta): Promise<IssuedTokens> {
-    const identifier = input.identifier.trim();
+    // Normalise once and use the SAME value for the account lookup and the lockout counter, so no
+    // spelling of an identifier can hit the account while counting failures under another key.
+    const identifier = normalizeLoginIdentifier(input.identifier);
+    const isEmail = identifier.includes('@');
     const failKey = redisKeys.loginFailures(identifier);
 
     const failures = Number((await this.redis.get(failKey)) ?? 0);
@@ -110,9 +113,7 @@ export class AuthService {
     }
 
     const user = await this.prisma.user.findUnique({
-      where: identifier.includes('@')
-        ? { email: identifier.toLowerCase() }
-        : { technicianCode: identifier.toUpperCase() },
+      where: isEmail ? { email: identifier } : { technicianCode: identifier },
       select: { ...authUserSelect, passwordHash: true },
     });
 
@@ -225,6 +226,16 @@ export class AuthService {
   private emailTaken() {
     return AppException.conflict('AUTH_EMAIL_TAKEN', 'Email hoặc số điện thoại đã được sử dụng');
   }
+}
+
+/**
+ * Canonical form of a login identifier: NFKC (folds look-alikes such as full-width letters or the
+ * Kelvin sign), trimmed, emails lower-cased, technician codes upper-cased — matching how they are
+ * stored. Used for BOTH the account lookup and the brute-force lockout key.
+ */
+export function normalizeLoginIdentifier(raw: string): string {
+  const value = raw.normalize('NFKC').trim();
+  return value.includes('@') ? value.toLowerCase() : value.toUpperCase();
 }
 
 export function toAuthUser(user: AuthUserRow): AuthUser {
