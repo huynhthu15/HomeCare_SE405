@@ -127,20 +127,18 @@ const DashboardPage = () => {
     );
   }
 
-  if (loadError) {
-    return (
-      <div
-        role="alert"
-        className="m-6 border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800"
-      >
-        {loadError}
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen text-slate-950">
       <div className="mx-auto max-w-7xl space-y-6">
+        {/* Show the error inline so the dashboard layout stays visible while its API is not ready */}
+        {loadError && (
+          <div
+            role="alert"
+            className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800"
+          >
+            {loadError}
+          </div>
+        )}
         <section className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
           <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-950 text-white shadow-xs">
             <div className="grid gap-6 p-6 lg:grid-cols-[1fr_260px] lg:items-end">

@@ -34,6 +34,19 @@ const mapBookingToJob = (booking) => ({
   color: colorByDomain[booking.domain] || 'sky',
 });
 
+const emptyTrackingJob = {
+  id: '—',
+  service: 'Chưa có booking để theo dõi',
+  domain: '—',
+  status: 'Chưa có dữ liệu',
+  color: 'sky',
+  address: '',
+  time: '',
+  technician: '',
+  note: '',
+  createdAt: '',
+};
+
 const formatStatusClass = (color) => {
   const variants = {
     sky: 'border-sky-200 bg-sky-50 text-sky-700',
@@ -72,7 +85,8 @@ export default function TrackingPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const activeJob = trackingJobs.find((job) => job.id === activeJobId);
+  // Placeholder keeps the detail panel renderable while there are no bookings (API not wired yet).
+  const activeJob = trackingJobs.find((job) => job.id === activeJobId) ?? emptyTrackingJob;
 
   const filteredJobs = useMemo(() => {
     const value = keyword.trim().toLowerCase();
@@ -90,18 +104,6 @@ export default function TrackingPage() {
 
   if (loading) {
     return <p className="p-8 text-center text-slate-600">Đang tải dữ liệu theo dõi...</p>;
-  }
-
-  if (loadError && trackingJobs.length === 0) {
-    return (
-      <p role="alert" className="p-8 text-center text-rose-700">
-        {loadError}
-      </p>
-    );
-  }
-
-  if (trackingJobs.length === 0) {
-    return <p className="p-8 text-center text-slate-600">Chưa có booking để theo dõi.</p>;
   }
 
   return (
